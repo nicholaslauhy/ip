@@ -9,9 +9,24 @@ public class Lumi {
     private static final int MAX_TASKS = 100;
     private static final String[] tasks = new String[MAX_TASKS];
 
-    // track number of tasks
+    // additional check when task done
+    private static final boolean[] isDone = new boolean[MAX_TASKS];
+
+    // track number of tasks there are
     private static int taskCount = 0;
 
+    // set remaining as a global variable to keep track of tasks remaining
+
+    // Count remaining tasks
+    private static int countRemainingTasks(){
+        int remaining = 0;
+        for (int i=0; i< taskCount; i+=1){
+            if (!isDone[i]){
+                remaining += 1;
+            }
+        }
+        return remaining;
+    }
 
     // create a list of introductions that Lumi can use instead
     private static final String[] INTROS = {
@@ -70,8 +85,11 @@ public class Lumi {
             System.out.print("Tasks for " + name + ": ");
             String user_input = in.nextLine();
 
+            // make everything lower case
+            String input = user_input.trim().toLowerCase();
+
             // Exit condition when user says bye
-            if (user_input.equalsIgnoreCase("bye")){
+            if (input.equals("bye")){
                 System.out.println(DIVIDER);
                 System.out.println("Lumi: " + getGoodBye());
                 System.out.println(DIVIDER);
@@ -79,20 +97,49 @@ public class Lumi {
             }
 
             // List tasks
-            if (user_input.equalsIgnoreCase("list")){
+            if (input.equals("list")){
                 System.out.println(DIVIDER);
                 for (int i=0; i< taskCount; i+=1){
-                    System.out.println((i+1) + ". " + tasks[i]);
+                    String status = isDone[i] ? "[X] " : "[ ] ";
+                    System.out.println((i+1) + "." + status + tasks[i]);
                 }
                 System.out.println(DIVIDER);
                 continue;
             }
-            tasks[taskCount] = user_input;
+
+            // Mark task
+            if (input.startsWith("mark ")){
+                int idx = Integer.parseInt(input.substring(5)) - 1;
+                isDone[idx] = true;
+
+                System.out.println(DIVIDER);
+                System.out.println("Good Job! I have marked this task as done:");
+                System.out.println("[X] " + tasks[idx]);
+                System.out.println("You have " + countRemainingTasks() + " tasks to go");
+                System.out.println(DIVIDER);
+                continue;
+            }
+
+            // Unmark task
+            if (input.startsWith("unmark ")){
+                int idx = Integer.parseInt(input.substring(7)) - 1;
+                isDone[idx] = false;
+
+                System.out.println(DIVIDER);
+                System.out.println("Oh no! Let me unmark this for you:");
+                System.out.println("[ ] " + tasks[idx]);
+                System.out.println("You have " + countRemainingTasks() + " tasks to go");
+                System.out.println(DIVIDER);
+                continue;
+            }
+
+            // Add task
+            tasks[taskCount] = input;
+            isDone[taskCount] = false;
             taskCount++;
 
-            // Echo input
             System.out.println(DIVIDER);
-            System.out.println("Lumi added: " + user_input);
+            System.out.println("Lumi added: " + input);
             System.out.println(DIVIDER);
         }
     }
