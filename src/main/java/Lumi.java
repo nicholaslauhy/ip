@@ -5,6 +5,14 @@ public class Lumi {
     private static final String DIVIDER =
             "____________________________________________________________";
 
+    // max number of tasks
+    private static final int MAX_TASKS = 100;
+    private static final String[] tasks = new String[MAX_TASKS];
+
+    // track number of tasks
+    private static int taskCount = 0;
+
+
     // create a list of introductions that Lumi can use instead
     private static final String[] INTROS = {
         "Hey! Lumi here, What can I help you with?",
@@ -40,7 +48,7 @@ public class Lumi {
         Scanner in = new Scanner(System.in);
 
         // Ask for user's name
-        System.out.print("What's your name? ");
+        System.out.print("I am your Task Manager! What's your name? ");
         String name = in.nextLine().trim();
 
         // If user's name is empty, fallback name
@@ -59,7 +67,7 @@ public class Lumi {
         System.out.println(DIVIDER);
 
         while (true){
-            System.out.print(name + ": ");
+            System.out.print("Tasks for " + name + ": ");
             String user_input = in.nextLine();
 
             // Exit condition when user says bye
@@ -70,9 +78,21 @@ public class Lumi {
                 break;
             }
 
+            // List tasks
+            if (user_input.equalsIgnoreCase("list")){
+                System.out.println(DIVIDER);
+                for (int i=0; i< taskCount; i+=1){
+                    System.out.println((i+1) + ". " + tasks[i]);
+                }
+                System.out.println(DIVIDER);
+                continue;
+            }
+            tasks[taskCount] = user_input;
+            taskCount++;
+
             // Echo input
             System.out.println(DIVIDER);
-            System.out.println("Lumi: " + user_input);
+            System.out.println("Lumi added: " + user_input);
             System.out.println(DIVIDER);
         }
     }
