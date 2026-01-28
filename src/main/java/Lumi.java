@@ -7,25 +7,30 @@ public class Lumi {
 
     // max number of tasks
     private static final int MAX_TASKS = 100;
-    private static final String[] tasks = new String[MAX_TASKS];
-
-    // additional check when task done
-    private static final boolean[] isDone = new boolean[MAX_TASKS];
+    private static final Task[] tasks = new Task[MAX_TASKS];
 
     // track number of tasks there are
     private static int taskCount = 0;
-
-    // set remaining as a global variable to keep track of tasks remaining
 
     // Count remaining tasks
     private static int countRemainingTasks(){
         int remaining = 0;
         for (int i=0; i< taskCount; i+=1){
-            if (!isDone[i]){
+            if (!tasks[i].isDone()){
                 remaining += 1;
             }
         }
         return remaining;
+    }
+
+    // print out the tasks in the list
+    private static void printList() {
+        System.out.println(DIVIDER);
+        System.out.println(" Here are the tasks in your list:");
+        for (int i = 0; i < taskCount; i++) {
+            System.out.println(" " + (i + 1) + "." + tasks[i]);
+        }
+        System.out.println(DIVIDER);
     }
 
     // create a list of introductions that Lumi can use instead
@@ -98,23 +103,18 @@ public class Lumi {
 
             // List tasks
             if (input.equals("list")){
-                System.out.println(DIVIDER);
-                for (int i=0; i< taskCount; i+=1){
-                    String status = isDone[i] ? "[X] " : "[ ] ";
-                    System.out.println((i+1) + "." + status + tasks[i]);
-                }
-                System.out.println(DIVIDER);
+                printList();
                 continue;
             }
 
             // Mark task
             if (input.startsWith("mark ")){
                 int idx = Integer.parseInt(input.substring(5)) - 1;
-                isDone[idx] = true;
+                tasks[idx].setDone(true);
 
                 System.out.println(DIVIDER);
                 System.out.println("Good Job! I have marked this task as done:");
-                System.out.println("[X] " + tasks[idx]);
+                System.out.println(" " + tasks[idx]);
                 System.out.println("You have " + countRemainingTasks() + " tasks to go");
                 System.out.println(DIVIDER);
                 continue;
@@ -123,19 +123,18 @@ public class Lumi {
             // Unmark task
             if (input.startsWith("unmark ")){
                 int idx = Integer.parseInt(input.substring(7)) - 1;
-                isDone[idx] = false;
+                tasks[idx].setDone(false);
 
                 System.out.println(DIVIDER);
                 System.out.println("Oh no! Let me unmark this for you:");
-                System.out.println("[ ] " + tasks[idx]);
+                System.out.println(" " + tasks[idx]);
                 System.out.println("You have " + countRemainingTasks() + " tasks to go");
                 System.out.println(DIVIDER);
                 continue;
             }
 
             // Add task
-            tasks[taskCount] = input;
-            isDone[taskCount] = false;
+            tasks[taskCount] = new Task(input);
             taskCount++;
 
             System.out.println(DIVIDER);
