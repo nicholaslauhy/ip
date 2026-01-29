@@ -33,6 +33,10 @@ public class Lumi {
         System.out.println(DIVIDER);
     }
 
+    private static boolean isValidTaskIndex(int idx) {
+        return idx >= 0 && idx < taskCount;
+    }
+
     // create a list of introductions that Lumi can use instead
     private static final String[] INTROS = {
         "Hey! Lumi here, What can I help you with?",
@@ -110,6 +114,24 @@ public class Lumi {
             // Mark task
             if (input.startsWith("mark ")){
                 int idx = Integer.parseInt(input.substring(5)) - 1;
+
+                // if invalid task
+                if (!isValidTaskIndex(idx)){
+                    System.out.println(DIVIDER);
+                    System.out.println("You DONUT. That's the wrong NUMBER! GIVE LUMI SOMETHING!!");
+                    System.out.println(DIVIDER);
+                    continue;
+                }
+                // if already marked
+                if (tasks[idx].isDone()){
+                    System.out.println(DIVIDER);
+                    System.out.println("You are EXTRA! Lumi does NOT like it!!");
+                    System.out.print(" " + tasks[idx]);
+                    System.out.println(DIVIDER);
+                    continue;
+                }
+
+                // mark task
                 tasks[idx].setDone(true);
 
                 System.out.println(DIVIDER);
@@ -123,12 +145,48 @@ public class Lumi {
             // Unmark task
             if (input.startsWith("unmark ")){
                 int idx = Integer.parseInt(input.substring(7)) - 1;
+
+                // invalid task number
+                if (!isValidTaskIndex(idx)){
+                    System.out.println(DIVIDER);
+                    System.out.println("Bruhhhh! Nobody gives weird numbers to Lumi!");
+                    System.out.println(DIVIDER);
+                    continue;
+                }
+
+                // already unmarked
+                if (!tasks[idx].isDone()){
+                    System.out.println(DIVIDER);
+                    System.out.println("What are you unmarking?? You are troubling me for nothing!!");
+                    System.out.println(" " + tasks[idx]);
+                    System.out.println(DIVIDER);
+                    continue;
+                }
+
+                // unmark task
                 tasks[idx].setDone(false);
 
                 System.out.println(DIVIDER);
                 System.out.println("Oh no! Let me unmark this for you:");
                 System.out.println(" " + tasks[idx]);
                 System.out.println("You have " + countRemainingTasks() + " tasks to go");
+                System.out.println(DIVIDER);
+                continue;
+            }
+
+            // Edge cases when adding task
+            // 1. If input is empty
+            if (input.isEmpty()){
+                System.out.println(DIVIDER);
+                System.out.println("WHAT??? ITS EMPTY???? Give me SOMETHING!!");
+                System.out.println(DIVIDER);
+                continue;
+            }
+
+            // 2. If input is full
+            if (taskCount >= MAX_TASKS){
+                System.out.println(DIVIDER);
+                System.out.println("Lumi...is FULL!! DELETE DELETE DELETE");
                 System.out.println(DIVIDER);
                 continue;
             }
