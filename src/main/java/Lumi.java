@@ -28,13 +28,46 @@ public class Lumi {
         System.out.println(DIVIDER);
         System.out.println(" Here are the tasks in your list:");
         for (int i = 0; i < taskCount; i++) {
-            System.out.println(" " + (i + 1) + "." + tasks[i]);
+            System.out.println(" " + (i + 1) + ". " + tasks[i]);
         }
         System.out.println(DIVIDER);
     }
 
+    // check if valid task
     private static boolean isValidTaskIndex(int idx) {
         return idx >= 0 && idx < taskCount;
+    }
+
+    // add task method
+    private static void addTask(Task task){
+        tasks[taskCount] = task;
+        taskCount++;
+
+        System.out.println(DIVIDER);
+        if (taskCount >= 1 && taskCount <= 9){
+            System.out.println("Sucks to be youuuu!! NEW TASK FOR YOU!!");
+        }
+        else if (taskCount >= 10 && taskCount <= 30){
+            System.out.println("Wow you're truly locked out grrr");
+        }
+        else {
+            System.out.println("You are hopeless ask your maid to do your tasks for you :p");
+        }
+
+        System.out.println(" " + task);
+        if (taskCount == 1){
+            System.out.println("Now you have " + taskCount + " problem to deal with...");
+        }
+        else if (taskCount > 1 && taskCount < 30){
+            System.out.println("Now you have " + taskCount + " problems to deal with...");
+        }
+        else if (taskCount >= 30 && taskCount <= MAX_TASKS){
+            System.out.println("You have too many problems to deal with...you better lock in. These " + taskCount + " tasks are going nowhere!");
+        }
+        else {
+            System.out.println("Now you have " + taskCount + " problems to deal with...");
+        }
+        System.out.println(DIVIDER);
     }
 
     // create a list of introductions that Lumi can use instead
@@ -191,12 +224,78 @@ public class Lumi {
                 continue;
             }
 
-            // Add task
-            tasks[taskCount] = new Task(input);
-            taskCount++;
+            // Todo
+            if (input.startsWith("todo ")){
+                String desc = user_input.trim().substring(5);
+                if (desc.isEmpty()){
+                    System.out.println(DIVIDER);
+                    System.out.println("WHERES THE DESCRIPTION???");
+                    System.out.println(DIVIDER);
+                    continue;
+                }
+                addTask(new Todo(desc));
+                continue;
+            }
 
+            // Deadline
+            if (input.startsWith("deadline ")){
+                String raw_text = user_input.trim();
+                int byPos = raw_text.indexOf(" /by ");
+                // if never adhere to naming
+                if (byPos == -1){
+                    System.out.println(DIVIDER);
+                    System.out.println("Lumi will only guide you ONCE! The format is: deadline <task> /by <when>!! NO MORE!!");
+                    System.out.println(DIVIDER);
+                    continue;
+                }
+                // after "deadline "
+                String desc = raw_text.substring(9, byPos).trim();
+                String by = raw_text.substring(byPos + 5).trim();
+
+                // edge cases
+                if (desc.isEmpty() || by.isEmpty()){
+                    System.out.println(DIVIDER);
+                    System.out.println("I NEED TIME ADDING / AT THE FRONT AND A DESCRIPTION");
+                    System.out.println(DIVIDER);
+                    continue;
+                }
+                addTask(new Deadline(desc, by));
+                continue;
+            }
+
+            // Event
+            if (input.startsWith("event ")){
+                String raw_input = user_input.trim();
+                int fromPos = raw_input.indexOf(" /from ");
+                int toPos = raw_input.indexOf(" /to ");
+
+                // edge cases
+                if (fromPos == -1 || toPos == -1 || toPos < fromPos){
+                    System.out.println(DIVIDER);
+                    System.out.println("I will only repeat this ONCE!! Format is: event <task> /from <start> /to <end>...DONT BLOW IT!");
+                    System.out.println(DIVIDER);
+                    continue;
+                }
+
+                String desc = raw_input.substring(6, fromPos).trim();
+                String from = raw_input.substring(fromPos + 7, toPos).trim();
+                String to = raw_input.substring(toPos + 5).trim();
+
+                if (desc.isEmpty() || from.isEmpty() || to.isEmpty()) {
+                    System.out.println(DIVIDER);
+                    System.out.println("An event needs a /FROM, a /TO and a DESCRIPTION!!");
+                    System.out.println(DIVIDER);
+                    continue;
+                }
+                addTask(new Event(desc, from, to));
+                continue;
+            }
+
+            // if command is unknown
             System.out.println(DIVIDER);
-            System.out.println("Lumi added: " + input);
+            System.out.println("AH?? What is THAT?? TRY AGAIN!");
+            System.out.println("Try these instead: todo, deadline, event, list, mark, unmark, bye");
+            System.out.println("If I don't see any of these, you are toast!!");
             System.out.println(DIVIDER);
         }
     }

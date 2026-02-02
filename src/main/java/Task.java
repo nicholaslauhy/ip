@@ -19,8 +19,13 @@ public class Task {
         return (isDone ? "[X]" : "[ ]");
     }
 
+    // used for "T", "D" and "E"
+    public String getTaskTypeIcon(){
+        return "[?]";
+    }
+
     @Override
     public String toString(){
-        return getStatusIcon() + " " + description;
+        return getTaskTypeIcon() + getStatusIcon() + " " + description;
     }
 }
