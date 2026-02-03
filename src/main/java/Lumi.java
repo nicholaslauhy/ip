@@ -1,5 +1,8 @@
 import java.util.Scanner;
 public class Lumi {
+    // =================== TEST MODE ====================
+    private static final boolean IS_TEST_MODE = (System.console() == null);
+
     // =================== CONSTANTS ====================
     // todo prefix length + space
     public static final int CMD_TODO_LENGTH = 5;
@@ -53,12 +56,22 @@ public class Lumi {
 
     // method to call introduction
     public static String getIntro(){
+        // for test mode
+        if (IS_TEST_MODE){
+            return INTROS[0];
+        }
+        // for actual use
         int idx = (int)(Math.random() * INTROS.length);
         return INTROS[idx];
     }
 
     // method to call goodbye
     public static String getGoodBye(){
+        // for test mode
+        if (IS_TEST_MODE){
+            return GOODBYE[0];
+        }
+        // for actual use
         int idx = (int)(Math.random() * GOODBYE.length);
         return GOODBYE[idx];
     }
@@ -164,7 +177,7 @@ public class Lumi {
     // print this till bye command given, then will exit
     private static void runLoop(Scanner in, String name){
         while (true){
-            System.out.println("Tasks for " + name + ": ");
+            System.out.println("Tasks for " + name + ":");
             String userInput = in.nextLine();
             String input = userInput.trim().toLowerCase();
 

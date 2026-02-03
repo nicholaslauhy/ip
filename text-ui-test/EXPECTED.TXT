@@ -1,7 +1,67 @@
-Hello from
- ____        _        
-|  _ \ _   _| | _____ 
-| | | | | | | |/ / _ \
-| |_| | |_| |   <  __/
-|____/ \__,_|_|\_\___|
+I am your Task Manager! What's your name?
+Hello NIC, I am
+ _      _   _   __  __   ___
+| |    | | | | |  \/  | |_ _|
+| |    | | | | | |\/| |  | |
+| |___ | |_| | | |  | |  | |
+|_____| \___/  |_|  |_| |___|
 
+Hey! Lumi here, What can I help you with?
+____________________________________________________________
+Tasks for nic:
+____________________________________________________________
+Sucks to be youuuu!! NEW TASK FOR YOU!!
+ [T][ ] borrow book
+Now you have 1 problem to deal with...
+____________________________________________________________
+Tasks for nic:
+____________________________________________________________
+WHAT??? ITS EMPTY???? Give me SOMETHING!!
+____________________________________________________________
+Tasks for nic:
+____________________________________________________________
+AH?? What is THAT?? TRY AGAIN!
+Try these instead: todo, deadline, event, list, mark, unmark, bye
+If I don't see any of these, you are toast!!
+____________________________________________________________
+Tasks for nic:
+____________________________________________________________
+AH?? What is THAT?? TRY AGAIN!
+Try these instead: todo, deadline, event, list, mark, unmark, bye
+If I don't see any of these, you are toast!!
+____________________________________________________________
+Tasks for nic:
+____________________________________________________________
+Here are the tasks in your list:
+ 1. [T][ ] borrow book
+____________________________________________________________
+Tasks for nic:
+____________________________________________________________
+Good Job! I have marked this task as done:
+ [T][X] borrow book
+You have 0 tasks to go
+____________________________________________________________
+Tasks for nic:
+____________________________________________________________
+Here are the tasks in your list:
+ 1. [T][X] borrow book
+____________________________________________________________
+Tasks for nic:
+____________________________________________________________
+Bruhhhh! Nobody gives weird numbers to Lumi!
+____________________________________________________________
+Tasks for nic:
+____________________________________________________________
+Oh no! Let me unmark this for you:
+ [T][ ] borrow book
+You have 1 tasks to go
+____________________________________________________________
+Tasks for nic:
+____________________________________________________________
+Here are the tasks in your list:
+ 1. [T][ ] borrow book
+____________________________________________________________
+Tasks for nic:
+____________________________________________________________
+Lumi: GoodBye.. more like GoodByte
+____________________________________________________________

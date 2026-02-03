@@ -1,0 +1,12 @@
+nic
+todo borrow book
+
+asdf
+todo
+list
+mark 1
+list
+unmark 2
+unmark 1
+list
+bye
