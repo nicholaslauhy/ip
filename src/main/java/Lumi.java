@@ -26,6 +26,8 @@ public class Lumi {
     // max number of tasks
     private static final int MAX_TASKS = 100;
     private static final Task[] tasks = new Task[MAX_TASKS];
+    public static final int LOW_TASK_THRESHOLD = 9;
+    public static final int MID_TASK_THRESHOLD = 30;
 
     // track number of tasks there are
     private static int taskCount = 0;
@@ -74,8 +76,8 @@ public class Lumi {
     }
 
     // check if valid task
-    private static boolean isValidTaskIndex(int taskIndex) {
-        return taskIndex >= 0 && taskIndex < taskCount;
+    private static boolean isInvalidTaskIndex(int taskIndex) {
+        return taskIndex < 0 || taskIndex >= taskCount;
     }
 
     // add task method
@@ -84,10 +86,10 @@ public class Lumi {
         taskCount++;
 
         System.out.println(DIVIDER);
-        if (taskCount >= 1 && taskCount <= 9){
+        if (taskCount >= 1 && taskCount <= LOW_TASK_THRESHOLD){
             System.out.println("Sucks to be youuuu!! NEW TASK FOR YOU!!");
         }
-        else if (taskCount >= 10 && taskCount <= 30){
+        else if (taskCount > LOW_TASK_THRESHOLD && taskCount <= MID_TASK_THRESHOLD) {
             System.out.println("Wow you're truly locked out grrr");
         }
         else {
@@ -95,17 +97,19 @@ public class Lumi {
         }
 
         System.out.println(" " + task);
+
         if (taskCount == 1){
             System.out.println("Now you have " + taskCount + " problem to deal with...");
         }
-        else if (taskCount > 1 && taskCount < 30){
+        else if (taskCount >= 1 && taskCount <= LOW_TASK_THRESHOLD){
             System.out.println("Now you have " + taskCount + " problems to deal with...");
         }
-        else if (taskCount >= 30 && taskCount <= MAX_TASKS){
-            System.out.println("You have too many problems to deal with...you better lock in. These " + taskCount + " tasks are going nowhere!");
+        else if (taskCount > LOW_TASK_THRESHOLD && taskCount <= MID_TASK_THRESHOLD){
+            System.out.println("What are you doing?? There are " + taskCount + " tasks left!!");
         }
         else {
-            System.out.println("Now you have " + taskCount + " problems to deal with...");
+            System.out.println("You have too many problems to deal with...you better lock in.");
+            System.out.println("These " + taskCount + " tasks are going nowhere!");
         }
         System.out.println(DIVIDER);
     }
@@ -113,7 +117,7 @@ public class Lumi {
     // print out the tasks in the list
     private static void printList() {
         System.out.println(DIVIDER);
-        System.out.println(" Here are the tasks in your list:");
+        System.out.println("Here are the tasks in your list:");
         for (int i = 0; i < taskCount; i++) {
             System.out.println(" " + (i + 1) + ". " + tasks[i]);
         }
@@ -125,9 +129,11 @@ public class Lumi {
         // For user input
         Scanner in = new Scanner(System.in);
 
+        // Print Lumi greeting
         String name = askName(in);
         printGreeting(name);
 
+        // "Tasks for... " loop
         runLoop(in, name);
 
         in.close();
@@ -142,12 +148,14 @@ public class Lumi {
 
     // LUMI in animated characters
     private static void printGreeting(String name){
-        String logo =
-                " _      _   _   __  __ ___ \n"
-                        + "| |    | | | | |  \\/  |_ _|\n"
-                        + "| |    | | | | | |\\/| || | \n"
-                        + "| |___ | |_| | | |  | || | \n"
-                        + "|_____| \\___/  |_|  |_|___|\n";
+        String logo = """
+         _      _   _   __  __   ___
+        | |    | | | | |  \\/  | |_ _|
+        | |    | | | | | |\\/| |  | |
+        | |___ | |_| | | |  | |  | |
+        |_____| \\___/  |_|  |_| |___|
+        """;
+
         System.out.println("Hello " + name.toUpperCase() + ", I am\n" + logo);
         System.out.println(getIntro());
         System.out.println(DIVIDER);
@@ -188,7 +196,7 @@ public class Lumi {
             int taskIndex = Integer.parseInt(input.substring(CMD_MARK_LENGTH)) - 1;
 
             // if invalid task
-            if (!isValidTaskIndex(taskIndex)){
+            if (isInvalidTaskIndex(taskIndex)){
                 System.out.println(DIVIDER);
                 System.out.println("You DONUT. That's the wrong NUMBER! GIVE LUMI SOMETHING!!");
                 System.out.println(DIVIDER);
@@ -219,7 +227,7 @@ public class Lumi {
             int taskIndex = Integer.parseInt(input.substring(CMD_UNMARK_LENGTH)) - 1;
 
             // invalid task number
-            if (!isValidTaskIndex(taskIndex)){
+            if (isInvalidTaskIndex(taskIndex)){
                 System.out.println(DIVIDER);
                 System.out.println("Bruhhhh! Nobody gives weird numbers to Lumi!");
                 System.out.println(DIVIDER);
