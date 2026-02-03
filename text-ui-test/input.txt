@@ -1,12 +1,27 @@
 nic
 todo borrow book
-
-asdf
-todo
+todo buy milk
 list
 mark 1
-list
+mark 1
 unmark 2
 unmark 1
+unmark 1
+mark lol
+unmark lol
+mark 12344i6
+deadline
+deadline /by tomorrow
+deadline  /by tomorrow
+deadline return book
+deadline return book /by
+deadline return book /by tomorrow
+event
+event /from 2pm /to 3pm
+event meeting /to 3pm
+event meeting /from 2pm
+event meeting /to 3pm /from 2pm
+event meeting /from 2pm /to 3pm
+asdf
 list
 bye

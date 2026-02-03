@@ -13,14 +13,14 @@ public class Lumi {
     // unmark prefix length + space
     public static final int CMD_UNMARK_LENGTH = 7;
 
-    // deadline prefix length + space
-    public static final int CMD_DEADLINE_LENGTH = 9;
-    public static final int CMD_DEADLINE_BY_LENGTH = 5;
-
-    // event prefix length + space
-    public static final int CMD_EVENT_LENGTH = 6;
-    public static final int CMD_EVENT_FROM_LENGTH = 7;
-    public static final int CMD_EVENT_TO_LENGTH = 5;
+//    // deadline prefix length + space
+//    public static final int CMD_DEADLINE_LENGTH = 9;
+//    public static final int CMD_DEADLINE_BY_LENGTH = 5;
+//
+//    // event prefix length + space
+//    public static final int CMD_EVENT_LENGTH = 6;
+//    public static final int CMD_EVENT_FROM_LENGTH = 7;
+//    public static final int CMD_EVENT_TO_LENGTH = 5;
 
     // create divider
     private static final String DIVIDER =
@@ -91,6 +91,20 @@ public class Lumi {
     // check if valid task
     private static boolean isInvalidTaskIndex(int taskIndex) {
         return taskIndex < 0 || taskIndex >= taskCount;
+    }
+
+    // parse task index
+    private static Integer parseTaskIndex(String input, int prefixLength){
+        String intPart = input.substring(prefixLength).trim();
+        if (intPart.isEmpty()){
+            return null;
+        }
+        try {
+            int oneBased = Integer.parseInt(intPart);
+            return oneBased - 1; // convert to 0-based
+        } catch (NumberFormatException e){
+            return null;
+        }
     }
 
     // add task method
@@ -206,7 +220,17 @@ public class Lumi {
 
         // Mark task
         if (input.startsWith("mark ")){
-            int taskIndex = Integer.parseInt(input.substring(CMD_MARK_LENGTH)) - 1;
+            Integer taskIndexObj = parseTaskIndex(input, CMD_MARK_LENGTH);
+
+            // if not a number
+            if (taskIndexObj == null){
+                System.out.println(DIVIDER);
+                System.out.println("LUMI IS ABOUT TO GET ANGRY!! GIVE ME A PROPER NUMBER");
+                System.out.println(DIVIDER);
+                return false;
+            }
+
+            int taskIndex = taskIndexObj;
 
             // if invalid task
             if (isInvalidTaskIndex(taskIndex)){
@@ -219,7 +243,7 @@ public class Lumi {
             if (tasks[taskIndex].isDone()){
                 System.out.println(DIVIDER);
                 System.out.println("You are EXTRA! Lumi does NOT like it!!");
-                System.out.print(" " + tasks[taskIndex]);
+                System.out.println(" " + tasks[taskIndex]);
                 System.out.println(DIVIDER);
                 return false;
             }
@@ -237,7 +261,17 @@ public class Lumi {
 
         // Unmark task
         if (input.startsWith("unmark ")){
-            int taskIndex = Integer.parseInt(input.substring(CMD_UNMARK_LENGTH)) - 1;
+            Integer taskIndexObj = parseTaskIndex(input, CMD_UNMARK_LENGTH);
+
+            // if not a number
+            if (taskIndexObj == null){
+                System.out.println(DIVIDER);
+                System.out.println("WHERES THE NUMBER AFT UNMARK?? NOBODY MESSES WITH LUMI");
+                System.out.println(DIVIDER);
+                return false;
+            }
+
+            int taskIndex = taskIndexObj;
 
             // invalid task number
             if (isInvalidTaskIndex(taskIndex)){
@@ -298,9 +332,10 @@ public class Lumi {
         }
 
         // Deadline
-        if (input.startsWith("deadline ")){
+        if (input.equals("deadline") || input.startsWith("deadline ")){
             String rawText = userInput.trim();
             int byPos = rawText.indexOf(" /by ");
+
             // if never adhere to naming
             if (byPos == -1){
                 System.out.println(DIVIDER);
@@ -308,14 +343,21 @@ public class Lumi {
                 System.out.println(DIVIDER);
                 return false;
             }
+
             // after "deadline "
-            String desc = rawText.substring(CMD_DEADLINE_LENGTH, byPos).trim();
-            String by = rawText.substring(byPos + CMD_DEADLINE_BY_LENGTH).trim();
+            String desc = rawText.substring("deadline".length(), byPos).trim();
+            String by = rawText.substring(byPos + " /by ".length()).trim();
 
             // edge cases
-            if (desc.isEmpty() || by.isEmpty()){
+            if (desc.isEmpty()){
                 System.out.println(DIVIDER);
-                System.out.println("I NEED TIME ADDING / AT THE FRONT AND A DESCRIPTION");
+                System.out.println("Wheres the ACTIVITY?? Format is: deadline <task> /by <when>... LAST CHANCE");
+                System.out.println(DIVIDER);
+                return false;
+            }
+            if (by.isEmpty()){
+                System.out.println(DIVIDER);
+                System.out.println("By when?? Format is: deadline <task> /by <when>../FOLLOW SIMPLE INSTRUCTIONS GRRR");
                 System.out.println(DIVIDER);
                 return false;
             }
@@ -337,13 +379,19 @@ public class Lumi {
                 return false;
             }
 
-            String desc = rawInput.substring(CMD_EVENT_LENGTH, fromPos).trim();
-            String from = rawInput.substring(fromPos + CMD_EVENT_FROM_LENGTH, toPos).trim();
-            String to = rawInput.substring(toPos + CMD_EVENT_TO_LENGTH).trim();
+            String desc = rawInput.substring("event".length(), fromPos).trim();
+            String from = rawInput.substring(fromPos + " /from ".length(), toPos).trim();
+            String to = rawInput.substring(toPos + " /to ".length()).trim();
 
-            if (desc.isEmpty() || from.isEmpty() || to.isEmpty()) {
+            if (desc.isEmpty()) {
                 System.out.println(DIVIDER);
-                System.out.println("An event needs a /FROM, a /TO and a DESCRIPTION!!");
+                System.out.println("What are you DOING?? Event needs a DESCRIPTION!!");
+                System.out.println(DIVIDER);
+                return false;
+            }
+            if (from.isEmpty() || to.isEmpty()){
+                System.out.println(DIVIDER);
+                System.out.println("Event needs BOTH /from and /to!! GET A GRIP");
                 System.out.println(DIVIDER);
                 return false;
             }
@@ -357,7 +405,6 @@ public class Lumi {
         System.out.println("Try these instead: todo, deadline, event, list, mark, unmark, bye");
         System.out.println("If I don't see any of these, you are toast!!");
         System.out.println(DIVIDER);
-
         return false;
     }
 }
