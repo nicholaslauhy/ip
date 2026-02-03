@@ -10,6 +10,38 @@ Hey! Lumi here, What can I help you with?
 ____________________________________________________________
 Tasks for nic:
 ____________________________________________________________
+Commands you can use:
+1) list - shows all tasks
+Format : list
+Example: list
+
+2) todo - add tasks that do not have deadlines
+Format: todo <description>
+Example: todo borrow book
+
+3) deadline - for tasks that has deadline
+Format: deadline <description> /by <when>
+Example: deadline return book /by tomorrow 6pm
+
+4) event - for events between a certain time frame
+Format: event <description> /from <start> /to <end>
+Example: event meeting /from 2pm /to 3pm
+
+5) mark - to mark a task that has been completed
+Format: mark <task number>
+Example: mark 1
+
+6) unmark - to unmark a task that had not been completed but was accidentally marked
+Format: unmark <task number>
+Example: unmark 2
+
+7) bye - exits the Lumi chatbot
+Format: bye
+Example: bye
+
+____________________________________________________________
+Tasks for nic:
+____________________________________________________________
 Sucks to be youuuu!! NEW TASK FOR YOU!!
  [T][ ] borrow book
 Now you have 1 problem to deal with...
@@ -39,8 +71,7 @@ You are EXTRA! Lumi does NOT like it!!
 ____________________________________________________________
 Tasks for nic:
 ____________________________________________________________
-What are you unmarking?? You are troubling me for nothing!!
- [T][ ] buy milk
+Bruhhhh! Nobody gives weird numbers to Lumi!
 ____________________________________________________________
 Tasks for nic:
 ____________________________________________________________
@@ -95,6 +126,7 @@ Tasks for nic:
 ____________________________________________________________
 AH?? What is THAT?? TRY AGAIN!
 Try these instead: todo, deadline, event, list, mark, unmark, bye
+Alternatively, you can type 'help' to know everything
 If I don't see any of these, you are toast!!
 ____________________________________________________________
 Tasks for nic:
@@ -123,6 +155,7 @@ Tasks for nic:
 ____________________________________________________________
 AH?? What is THAT?? TRY AGAIN!
 Try these instead: todo, deadline, event, list, mark, unmark, bye
+Alternatively, you can type 'help' to know everything
 If I don't see any of these, you are toast!!
 ____________________________________________________________
 Tasks for nic:

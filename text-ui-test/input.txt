@@ -1,10 +1,11 @@
 nic
+help
 todo borrow book
 todo buy milk
 list
 mark 1
 mark 1
-unmark 2
+unmark 3
 unmark 1
 unmark 1
 mark lol

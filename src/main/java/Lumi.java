@@ -1,8 +1,39 @@
 import java.util.Scanner;
 public class Lumi {
     // =================== TEST MODE ====================
-    private static final boolean IS_TEST_MODE = (System.console() == null);
+    private static boolean isTestMode = false;
 
+    // ===================== HELP =======================
+    private static final String HELP_MESSAGE = """
+            Commands you can use:
+            1) list - shows all tasks
+            Format : list
+            Example: list
+            
+            2) todo - add tasks that do not have deadlines
+            Format: todo <description>
+            Example: todo borrow book
+            
+            3) deadline - for tasks that has deadline
+            Format: deadline <description> /by <when>
+            Example: deadline return book /by tomorrow 6pm
+            
+            4) event - for events between a certain time frame
+            Format: event <description> /from <start> /to <end>
+            Example: event meeting /from 2pm /to 3pm
+            
+            5) mark - to mark a task that has been completed
+            Format: mark <task number>
+            Example: mark 1
+            
+            6) unmark - to unmark a task that had not been completed but was accidentally marked
+            Format: unmark <task number>
+            Example: unmark 2
+            
+            7) bye - exits the Lumi chatbot
+            Format: bye
+            Example: bye
+            """;
     // =================== CONSTANTS ====================
     // todo prefix length + space
     public static final int CMD_TODO_LENGTH = 5;
@@ -12,15 +43,6 @@ public class Lumi {
 
     // unmark prefix length + space
     public static final int CMD_UNMARK_LENGTH = 7;
-
-//    // deadline prefix length + space
-//    public static final int CMD_DEADLINE_LENGTH = 9;
-//    public static final int CMD_DEADLINE_BY_LENGTH = 5;
-//
-//    // event prefix length + space
-//    public static final int CMD_EVENT_LENGTH = 6;
-//    public static final int CMD_EVENT_FROM_LENGTH = 7;
-//    public static final int CMD_EVENT_TO_LENGTH = 5;
 
     // create divider
     private static final String DIVIDER =
@@ -57,7 +79,7 @@ public class Lumi {
     // method to call introduction
     public static String getIntro(){
         // for test mode
-        if (IS_TEST_MODE){
+        if (isTestMode){
             return INTROS[0];
         }
         // for actual use
@@ -68,7 +90,7 @@ public class Lumi {
     // method to call goodbye
     public static String getGoodBye(){
         // for test mode
-        if (IS_TEST_MODE){
+        if (isTestMode) {
             return GOODBYE[0];
         }
         // for actual use
@@ -153,6 +175,7 @@ public class Lumi {
 
     // ====================== MAIN =========================
     public static void main(String[] args) {
+        isTestMode = args.length > 0 && args[0].equals("--test");
         // For user input
         Scanner in = new Scanner(System.in);
 
@@ -204,17 +227,23 @@ public class Lumi {
 
     // all new commands
     private static boolean handleCommand(String input, String userInput){
+
+        // switch cases for simple commands
+        switch(input) {
+
         // Exit condition when user says bye
-        if (input.equals("bye")){
+        case ("bye"):
             System.out.println(DIVIDER);
             System.out.println("Lumi: " + getGoodBye());
             System.out.println(DIVIDER);
             return true;
-        }
-
-        // List tasks
-        if (input.equals("list")){
+        case ("list"):
             printList();
+            return false;
+        case ("help"):
+            System.out.println(DIVIDER);
+            System.out.println(HELP_MESSAGE);
+            System.out.println(DIVIDER);
             return false;
         }
 
@@ -403,6 +432,7 @@ public class Lumi {
         System.out.println(DIVIDER);
         System.out.println("AH?? What is THAT?? TRY AGAIN!");
         System.out.println("Try these instead: todo, deadline, event, list, mark, unmark, bye");
+        System.out.println("Alternatively, you can type 'help' to know everything");
         System.out.println("If I don't see any of these, you are toast!!");
         System.out.println(DIVIDER);
         return false;
