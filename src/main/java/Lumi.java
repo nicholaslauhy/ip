@@ -227,7 +227,6 @@ public class Lumi {
 
     // all new commands
     private static boolean handleCommand(String input, String userInput){
-
         // switch cases for simple commands
         switch(input) {
 
@@ -277,7 +276,6 @@ public class Lumi {
                 return false;
             }
 
-            // mark task
             tasks[taskIndex].setDone(true);
 
             System.out.println(DIVIDER);
@@ -319,7 +317,6 @@ public class Lumi {
                 return false;
             }
 
-            // unmark task
             tasks[taskIndex].setDone(false);
 
             System.out.println(DIVIDER);
@@ -347,7 +344,7 @@ public class Lumi {
             return false;
         }
 
-        // Todo
+        // Add todo task
         if (input.startsWith("todo ")){
             String desc = userInput.trim().substring(CMD_TODO_LENGTH);
             if (desc.isEmpty()){
@@ -360,7 +357,7 @@ public class Lumi {
             return false;
         }
 
-        // Deadline
+        // Add deadline task
         if (input.equals("deadline") || input.startsWith("deadline ")){
             String rawText = userInput.trim();
             int byPos = rawText.indexOf(" /by ");
@@ -394,7 +391,7 @@ public class Lumi {
             return false;
         }
 
-        // Event
+        // Add event task
         if (input.startsWith("event ")){
             String rawInput = userInput.trim();
             int fromPos = rawInput.indexOf(" /from ");
@@ -428,11 +425,11 @@ public class Lumi {
             return false;
         }
 
-        // if command is unknown
+        // if command is unknown (not any of the mentioned)
         System.out.println(DIVIDER);
         System.out.println("AH?? What is THAT?? TRY AGAIN!");
         System.out.println("Try these instead: todo, deadline, event, list, mark, unmark, bye");
-        System.out.println("Alternatively, you can type 'help' to know everything");
+        System.out.println("For the syntax and list of commands, you can type 'help' to know everything");
         System.out.println("If I don't see any of these, you are toast!!");
         System.out.println(DIVIDER);
         return false;
