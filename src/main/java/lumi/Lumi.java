@@ -1,3 +1,10 @@
+package lumi;
+import lumi.exception.LumiException;
+import lumi.task.Deadline;
+import lumi.task.Event;
+import lumi.task.Task;
+import lumi.task.Todo;
+
 import java.util.Scanner;
 public class Lumi {
     // =================== TEST MODE ====================
@@ -236,7 +243,7 @@ public class Lumi {
     private static boolean handleCommand(String input, String userInput) throws LumiException{
         // switch cases for simple commands
         switch(input) {
-        
+
         case ("bye"):
             System.out.println(DIVIDER);
             System.out.println("Lumi: " + getGoodBye());

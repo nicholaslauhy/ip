@@ -1,4 +1,6 @@
-public class Todo extends Task{
+package lumi.task;
+
+public class Todo extends Task {
     // constructor
     public Todo(String description){
         // take from parent class

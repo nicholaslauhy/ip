@@ -1,4 +1,6 @@
-public class Deadline extends Task{
+package lumi.task;
+
+public class Deadline extends Task {
     protected String by;
 
     // constructor
