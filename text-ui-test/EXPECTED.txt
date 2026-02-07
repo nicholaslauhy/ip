@@ -67,7 +67,7 @@ ____________________________________________________________
 Tasks for nic:
 ____________________________________________________________
 You are EXTRA! Lumi does NOT like it!!
- [T][X] borrow book
+[T][X] borrow book
 ____________________________________________________________
 Tasks for nic:
 ____________________________________________________________
@@ -82,7 +82,7 @@ ____________________________________________________________
 Tasks for nic:
 ____________________________________________________________
 What are you unmarking?? You are troubling me for nothing!!
- [T][ ] borrow book
+[T][ ] borrow book
 ____________________________________________________________
 Tasks for nic:
 ____________________________________________________________
@@ -128,6 +128,7 @@ AH?? What is THAT?? TRY AGAIN!
 Try these instead: todo, deadline, event, list, mark, unmark, bye
 For the syntax and list of commands, you can type 'help' to know everything
 If I don't see any of these, you are toast!!
+
 ____________________________________________________________
 Tasks for nic:
 ____________________________________________________________
@@ -157,6 +158,7 @@ AH?? What is THAT?? TRY AGAIN!
 Try these instead: todo, deadline, event, list, mark, unmark, bye
 For the syntax and list of commands, you can type 'help' to know everything
 If I don't see any of these, you are toast!!
+
 ____________________________________________________________
 Tasks for nic:
 ____________________________________________________________
