@@ -218,27 +218,35 @@ public class Lumi {
             String userInput = in.nextLine();
             String input = userInput.trim().toLowerCase();
 
-            boolean shouldExit = handleCommand(input, userInput);
-            if (shouldExit){
-                break;
+            try {
+                boolean shouldExit = handleCommand(input, userInput);
+                if (shouldExit) {
+                    break;
+                }
+            }
+            catch (LumiException e) {
+                System.out.println(DIVIDER);
+                System.out.println(e.getMessage());
+                System.out.println(DIVIDER);
             }
         }
     }
 
     // all new commands
-    private static boolean handleCommand(String input, String userInput){
+    private static boolean handleCommand(String input, String userInput) throws LumiException{
         // switch cases for simple commands
         switch(input) {
-
-        // Exit condition when user says bye
+        
         case ("bye"):
             System.out.println(DIVIDER);
             System.out.println("Lumi: " + getGoodBye());
             System.out.println(DIVIDER);
             return true;
+
         case ("list"):
             printList();
             return false;
+
         case ("help"):
             System.out.println(DIVIDER);
             System.out.println(HELP_MESSAGE);
@@ -252,28 +260,18 @@ public class Lumi {
 
             // if not a number
             if (taskIndexObj == null){
-                System.out.println(DIVIDER);
-                System.out.println("LUMI IS ABOUT TO GET ANGRY!! GIVE ME A PROPER NUMBER");
-                System.out.println(DIVIDER);
-                return false;
+                throw new LumiException("LUMI IS ABOUT TO GET ANGRY!! GIVE ME A PROPER NUMBER");
             }
 
             int taskIndex = taskIndexObj;
 
             // if invalid task
             if (isInvalidTaskIndex(taskIndex)){
-                System.out.println(DIVIDER);
-                System.out.println("You DONUT. That's the wrong NUMBER! GIVE LUMI SOMETHING!!");
-                System.out.println(DIVIDER);
-                return false;
+                throw new LumiException("You DONUT. That's the wrong NUMBER! GIVE LUMI SOMETHING!!");
             }
             // if already marked
             if (tasks[taskIndex].isDone()){
-                System.out.println(DIVIDER);
-                System.out.println("You are EXTRA! Lumi does NOT like it!!");
-                System.out.println(" " + tasks[taskIndex]);
-                System.out.println(DIVIDER);
-                return false;
+                throw new LumiException("You are EXTRA! Lumi does NOT like it!!\n" + tasks[taskIndex]);
             }
 
             tasks[taskIndex].setDone(true);
@@ -292,29 +290,19 @@ public class Lumi {
 
             // if not a number
             if (taskIndexObj == null){
-                System.out.println(DIVIDER);
-                System.out.println("WHERES THE NUMBER AFT UNMARK?? NOBODY MESSES WITH LUMI");
-                System.out.println(DIVIDER);
-                return false;
+                throw new LumiException("WHERES THE NUMBER AFT UNMARK?? NOBODY MESSES WITH LUMI");
             }
 
             int taskIndex = taskIndexObj;
 
             // invalid task number
             if (isInvalidTaskIndex(taskIndex)){
-                System.out.println(DIVIDER);
-                System.out.println("Bruhhhh! Nobody gives weird numbers to Lumi!");
-                System.out.println(DIVIDER);
-                return false;
+                throw new LumiException("Bruhhhh! Nobody gives weird numbers to Lumi!");
             }
 
             // already unmarked
             if (!tasks[taskIndex].isDone()){
-                System.out.println(DIVIDER);
-                System.out.println("What are you unmarking?? You are troubling me for nothing!!");
-                System.out.println(" " + tasks[taskIndex]);
-                System.out.println(DIVIDER);
-                return false;
+                throw new LumiException("What are you unmarking?? You are troubling me for nothing!!\n" + tasks[taskIndex]);
             }
 
             tasks[taskIndex].setDone(false);
@@ -330,28 +318,20 @@ public class Lumi {
         // Edge cases when adding task
         // 1. If input is empty
         if (input.isEmpty()){
-            System.out.println(DIVIDER);
-            System.out.println("WHAT??? ITS EMPTY???? Give me SOMETHING!!");
-            System.out.println(DIVIDER);
-            return false;
+            throw new LumiException("WHAT??? ITS EMPTY???? Give me SOMETHING!!");
+
         }
 
         // 2. If input is full
         if (taskCount >= MAX_TASKS){
-            System.out.println(DIVIDER);
-            System.out.println("Lumi...is FULL!! DELETE DELETE DELETE");
-            System.out.println(DIVIDER);
-            return false;
+            throw new LumiException("Lumi...is FULL!! DELETE DELETE DELETE");
         }
 
         // Add todo task
         if (input.startsWith("todo ")){
             String desc = userInput.trim().substring(CMD_TODO_LENGTH);
             if (desc.isEmpty()){
-                System.out.println(DIVIDER);
-                System.out.println("WHERES THE DESCRIPTION???");
-                System.out.println(DIVIDER);
-                return false;
+                throw new LumiException("WHERES THE DESCRIPTION???");
             }
             addTask(new Todo(desc));
             return false;
@@ -364,10 +344,7 @@ public class Lumi {
 
             // if never adhere to naming
             if (byPos == -1){
-                System.out.println(DIVIDER);
-                System.out.println("Lumi will only guide you ONCE! The format is: deadline <task> /by <when>!! NO MORE!!");
-                System.out.println(DIVIDER);
-                return false;
+                throw new LumiException("Lumi will only guide you ONCE! The format is: deadline <task> /by <when>!! NO MORE!!");
             }
 
             // after "deadline "
@@ -376,16 +353,10 @@ public class Lumi {
 
             // edge cases
             if (desc.isEmpty()){
-                System.out.println(DIVIDER);
-                System.out.println("Wheres the ACTIVITY?? Format is: deadline <task> /by <when>... LAST CHANCE");
-                System.out.println(DIVIDER);
-                return false;
+                throw new LumiException("Wheres the ACTIVITY?? Format is: deadline <task> /by <when>... LAST CHANCE");
             }
             if (by.isEmpty()){
-                System.out.println(DIVIDER);
-                System.out.println("By when?? Format is: deadline <task> /by <when>../FOLLOW SIMPLE INSTRUCTIONS GRRR");
-                System.out.println(DIVIDER);
-                return false;
+                throw new LumiException("By when?? Format is: deadline <task> /by <when>../FOLLOW SIMPLE INSTRUCTIONS GRRR");
             }
             addTask(new Deadline(desc, by));
             return false;
@@ -399,10 +370,7 @@ public class Lumi {
 
             // edge cases
             if (fromPos == -1 || toPos == -1 || toPos < fromPos){
-                System.out.println(DIVIDER);
-                System.out.println("I will only repeat this ONCE!! Format is: event <task> /from <start> /to <end>...DONT BLOW IT!");
-                System.out.println(DIVIDER);
-                return false;
+                throw new LumiException("I will only repeat this ONCE!! Format is: event <task> /from <start> /to <end>...DONT BLOW IT!");
             }
 
             String desc = rawInput.substring("event".length(), fromPos).trim();
@@ -410,28 +378,22 @@ public class Lumi {
             String to = rawInput.substring(toPos + " /to ".length()).trim();
 
             if (desc.isEmpty()) {
-                System.out.println(DIVIDER);
-                System.out.println("What are you DOING?? Event needs a DESCRIPTION!!");
-                System.out.println(DIVIDER);
-                return false;
+                throw new LumiException("What are you DOING?? Event needs a DESCRIPTION!!");
             }
             if (from.isEmpty() || to.isEmpty()){
-                System.out.println(DIVIDER);
-                System.out.println("Event needs BOTH /from and /to!! GET A GRIP");
-                System.out.println(DIVIDER);
-                return false;
+                throw new LumiException("Event needs BOTH /from and /to!! GET A GRIP");
             }
             addTask(new Event(desc, from, to));
             return false;
         }
 
         // if command is unknown (not any of the mentioned)
-        System.out.println(DIVIDER);
-        System.out.println("AH?? What is THAT?? TRY AGAIN!");
-        System.out.println("Try these instead: todo, deadline, event, list, mark, unmark, bye");
-        System.out.println("For the syntax and list of commands, you can type 'help' to know everything");
-        System.out.println("If I don't see any of these, you are toast!!");
-        System.out.println(DIVIDER);
-        return false;
+        throw new LumiException("""
+        AH?? What is THAT?? TRY AGAIN!
+        Try these instead: todo, deadline, event, list, mark, unmark, bye
+        For the syntax and list of commands, you can type 'help' to know everything
+        If I don't see any of these, you are toast!!
+        """
+        );
     }
 }
