@@ -4,6 +4,7 @@ import lumi.task.Deadline;
 import lumi.task.Event;
 import lumi.task.Task;
 import lumi.task.Todo;
+import lumi.task.TaskList;
 
 import java.util.Scanner;
 public class Lumi {
@@ -33,13 +34,18 @@ public class Lumi {
             Format: mark <task number>
             Example: mark 1
             
-            6) unmark - to unmark a task that had not been completed but was accidentally marked
+            6) unmark - to unmark a task that had not been completed 
+                        but was accidentally marked
             Format: unmark <task number>
             Example: unmark 2
             
             7) bye - exits the Lumi chatbot
             Format: bye
             Example: bye
+            
+            8) delete - deletes selected task
+            Format: delete <task number>
+            Example: delete 2
             """;
     // =================== CONSTANTS ====================
     // todo prefix length + space
@@ -56,13 +62,14 @@ public class Lumi {
             "____________________________________________________________";
 
     // max number of tasks
-    private static final int MAX_TASKS = 100;
-    private static final Task[] tasks = new Task[MAX_TASKS];
     public static final int LOW_TASK_THRESHOLD = 9;
     public static final int MID_TASK_THRESHOLD = 30;
 
     // track number of tasks there are
-    private static int taskCount = 0;
+    //private static int taskCount = 0;
+
+    // new TaskList collection
+    private static final TaskList taskList = new TaskList();
 
     // ==================== INTROS / GOODBYE ====================
     // create a list of introductions that Lumi can use instead
@@ -108,29 +115,17 @@ public class Lumi {
     // ================= TASKS METHODS ====================
     // Count remaining tasks
     private static int countRemainingTasks(){
-        int remaining = 0;
-        for (int i=0; i< taskCount; i+=1){
-            if (!tasks[i].isDone()){
-                remaining += 1;
-            }
-        }
-        return remaining;
-    }
-
-    // check if valid task
-    private static boolean isInvalidTaskIndex(int taskIndex) {
-        return taskIndex < 0 || taskIndex >= taskCount;
+        return taskList.countRemaining();
     }
 
     // parse task index
-    private static Integer parseTaskIndex(String input, int prefixLength){
+    private static Integer parseTaskNumber(String input, int prefixLength){
         String intPart = input.substring(prefixLength).trim();
         if (intPart.isEmpty()){
             return null;
         }
         try {
-            int oneBased = Integer.parseInt(intPart);
-            return oneBased - 1; // convert to 0-based
+            return Integer.parseInt(intPart); // keep it 1-based
         } catch (NumberFormatException e){
             return null;
         }
@@ -138,8 +133,8 @@ public class Lumi {
 
     // add task method
     private static void addTask(Task task){
-        tasks[taskCount] = task;
-        taskCount++;
+        taskList.add(task);
+        int taskCount = taskList.size();
 
         System.out.println(DIVIDER);
         if (taskCount >= 1 && taskCount <= LOW_TASK_THRESHOLD){
@@ -174,8 +169,8 @@ public class Lumi {
     private static void printList() {
         System.out.println(DIVIDER);
         System.out.println("Here are the tasks in your list:");
-        for (int i = 0; i < taskCount; i++) {
-            System.out.println(" " + (i + 1) + ". " + tasks[i]);
+        for (int i = 0; i < taskList.size(); i++) {
+            System.out.println(" " + (i + 1) + ". " + taskList.all().get(i));
         }
         System.out.println(DIVIDER);
     }
@@ -263,29 +258,26 @@ public class Lumi {
 
         // Mark task
         if (input.startsWith("mark ")){
-            Integer taskIndexObj = parseTaskIndex(input, CMD_MARK_LENGTH);
+            Integer taskNumberObj = parseTaskNumber(input, CMD_MARK_LENGTH);
 
             // if not a number
-            if (taskIndexObj == null){
+            if (taskNumberObj == null){
                 throw new LumiException("LUMI IS ABOUT TO GET ANGRY!! GIVE ME A PROPER NUMBER");
             }
 
-            int taskIndex = taskIndexObj;
-
-            // if invalid task
-            if (isInvalidTaskIndex(taskIndex)){
-                throw new LumiException("You DONUT. That's the wrong NUMBER! GIVE LUMI SOMETHING!!");
-            }
+            int taskNumber = taskNumberObj;
+            Task task = taskList.get(taskNumber);
+            
             // if already marked
-            if (tasks[taskIndex].isDone()){
-                throw new LumiException("You are EXTRA! Lumi does NOT like it!!\n" + tasks[taskIndex]);
+            if (task.isDone()){
+                throw new LumiException("You are EXTRA! Lumi does NOT like it!!\n" + task);
             }
 
-            tasks[taskIndex].setDone(true);
+            task.setDone(true);
 
             System.out.println(DIVIDER);
             System.out.println("Good Job! I have marked this task as done:");
-            System.out.println(" " + tasks[taskIndex]);
+            System.out.println(" " + task);
             System.out.println("You have " + countRemainingTasks() + " tasks to go");
             System.out.println(DIVIDER);
             return false;
@@ -293,30 +285,26 @@ public class Lumi {
 
         // Unmark task
         if (input.startsWith("unmark ")){
-            Integer taskIndexObj = parseTaskIndex(input, CMD_UNMARK_LENGTH);
+            Integer taskNumberObj = parseTaskNumber(input, CMD_UNMARK_LENGTH);
 
             // if not a number
-            if (taskIndexObj == null){
+            if (taskNumberObj == null){
                 throw new LumiException("WHERES THE NUMBER AFT UNMARK?? NOBODY MESSES WITH LUMI");
             }
 
-            int taskIndex = taskIndexObj;
-
-            // invalid task number
-            if (isInvalidTaskIndex(taskIndex)){
-                throw new LumiException("Bruhhhh! Nobody gives weird numbers to Lumi!");
-            }
+            int taskNumber = taskNumberObj;
+            Task task = taskList.get(taskNumber);
 
             // already unmarked
-            if (!tasks[taskIndex].isDone()){
-                throw new LumiException("What are you unmarking?? You are troubling me for nothing!!\n" + tasks[taskIndex]);
+            if (!task.isDone()){
+                throw new LumiException("What are you unmarking?? You are troubling me for nothing!!\n" + task);
             }
 
-            tasks[taskIndex].setDone(false);
+            task.setDone(false);
 
             System.out.println(DIVIDER);
             System.out.println("Oh no! Let me unmark this for you:");
-            System.out.println(" " + tasks[taskIndex]);
+            System.out.println(" " + task);
             System.out.println("You have " + countRemainingTasks() + " tasks to go");
             System.out.println(DIVIDER);
             return false;
@@ -327,11 +315,6 @@ public class Lumi {
         if (input.isEmpty()){
             throw new LumiException("WHAT??? ITS EMPTY???? Give me SOMETHING!!");
 
-        }
-
-        // 2. If input is full
-        if (taskCount >= MAX_TASKS){
-            throw new LumiException("Lumi...is FULL!! DELETE DELETE DELETE");
         }
 
         // Add todo task
@@ -391,6 +374,29 @@ public class Lumi {
                 throw new LumiException("Event needs BOTH /from and /to!! GET A GRIP");
             }
             addTask(new Event(desc, from, to));
+            return false;
+        }
+        
+        // Delete tasks
+        // Error 1: if no task number
+        if (input.equals("delete")){
+            throw new LumiException("Do you think Lumi is a mind reader?? GIVE ME A TASK NUMBER");
+        }
+        if (input.startsWith("delete")){
+            Integer taskNumberObj = parseTaskNumber(input, "delete ".length());
+
+            if (taskNumberObj == null){
+                throw new LumiException("*facepalm* HOW CAN YOU SCREW IT UP! The format is: delete <task NUMBER>!!");
+            }
+
+            int taskNumber = taskNumberObj;
+            Task deleted = taskList.delete(taskNumber);
+
+            System.out.println(DIVIDER);
+            System.out.println("Okie go on with your other tasks...");
+            System.out.println(" " + deleted);
+            System.out.println("You now have " + taskList.size() + " tasks in your list.");
+            System.out.println(DIVIDER);
             return false;
         }
 
