@@ -25,4 +25,8 @@ event meeting /to 3pm /from 2pm
 event meeting /from 2pm /to 3pm
 asdf
 list
+delete 1
+delete abc
+delete 123abc
+list
 bye

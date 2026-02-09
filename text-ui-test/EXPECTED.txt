@@ -31,13 +31,18 @@ Example: event meeting /from 2pm /to 3pm
 Format: mark <task number>
 Example: mark 1
 
-6) unmark - to unmark a task that had not been completed but was accidentally marked
+6) unmark - to unmark a task that had not been completed
+            but was accidentally marked
 Format: unmark <task number>
 Example: unmark 2
 
 7) bye - exits the Lumi chatbot
 Format: bye
 Example: bye
+
+8) delete - deletes selected task
+Format: delete <task number>
+Example: delete 2
 
 ____________________________________________________________
 Tasks for nic:
@@ -71,7 +76,7 @@ You are EXTRA! Lumi does NOT like it!!
 ____________________________________________________________
 Tasks for nic:
 ____________________________________________________________
-Bruhhhh! Nobody gives weird numbers to Lumi!
+What invisible task are you taking?? Stop pretending like you have alot of tasks... Lumi is watching!!
 ____________________________________________________________
 Tasks for nic:
 ____________________________________________________________
@@ -167,6 +172,27 @@ Here are the tasks in your list:
  2. [T][ ] buy milk
  3. [D][ ] return book (by: tomorrow)
  4. [E][ ] meeting (from: 2pm to: 3pm)
+____________________________________________________________
+Tasks for nic:
+____________________________________________________________
+Okie go on with your other tasks...
+ [T][ ] borrow book
+You now have 3 tasks in your list.
+____________________________________________________________
+Tasks for nic:
+____________________________________________________________
+*facepalm* HOW CAN YOU SCREW IT UP! The format is: delete <task NUMBER>!!
+____________________________________________________________
+Tasks for nic:
+____________________________________________________________
+*facepalm* HOW CAN YOU SCREW IT UP! The format is: delete <task NUMBER>!!
+____________________________________________________________
+Tasks for nic:
+____________________________________________________________
+Here are the tasks in your list:
+ 1. [T][ ] buy milk
+ 2. [D][ ] return book (by: tomorrow)
+ 3. [E][ ] meeting (from: 2pm to: 3pm)
 ____________________________________________________________
 Tasks for nic:
 ____________________________________________________________
