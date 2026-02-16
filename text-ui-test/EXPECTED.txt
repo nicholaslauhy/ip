@@ -130,7 +130,7 @@ ____________________________________________________________
 Tasks for nic:
 ____________________________________________________________
 AH?? What is THAT?? TRY AGAIN!
-Try these instead: todo, deadline, event, list, mark, unmark, bye
+Try these instead: todo, deadline, event, list, mark, unmark, bye, delete, help
 For the syntax and list of commands, you can type 'help' to know everything
 If I don't see any of these, you are toast!!
 
@@ -160,7 +160,7 @@ ____________________________________________________________
 Tasks for nic:
 ____________________________________________________________
 AH?? What is THAT?? TRY AGAIN!
-Try these instead: todo, deadline, event, list, mark, unmark, bye
+Try these instead: todo, deadline, event, list, mark, unmark, bye, delete, help
 For the syntax and list of commands, you can type 'help' to know everything
 If I don't see any of these, you are toast!!
 

@@ -11,6 +11,14 @@ public class Event extends Task {
         this.to = to;
     }
 
+    public String getFrom(){
+        return from;
+    }
+
+    public String getTo(){
+        return to;
+    }
+
     // override previous declared "[?]"
     @Override
     public String getTaskTypeIcon(){
