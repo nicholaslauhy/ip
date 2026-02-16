@@ -5,6 +5,7 @@ import lumi.task.Event;
 import lumi.task.Task;
 import lumi.task.Todo;
 import lumi.task.TaskList;
+import lumi.storage.Storage;
 
 import java.util.Scanner;
 public class Lumi {
@@ -34,7 +35,7 @@ public class Lumi {
             Format: mark <task number>
             Example: mark 1
             
-            6) unmark - to unmark a task that had not been completed 
+            6) unmark - to unmark a task that had not been completed
                         but was accidentally marked
             Format: unmark <task number>
             Example: unmark 2
@@ -65,11 +66,11 @@ public class Lumi {
     public static final int LOW_TASK_THRESHOLD = 9;
     public static final int MID_TASK_THRESHOLD = 30;
 
-    // track number of tasks there are
-    //private static int taskCount = 0;
-
     // new TaskList collection
-    private static final TaskList taskList = new TaskList();
+    private static TaskList taskList = new TaskList();
+
+    // storage filepath
+    private static Storage storage;
 
     // ==================== INTROS / GOODBYE ====================
     // create a list of introductions that Lumi can use instead
@@ -113,12 +114,12 @@ public class Lumi {
     }
 
     // ================= TASKS METHODS ====================
-    // Count remaining tasks
+    // Count remaining tasks (done vs not done in list)
     private static int countRemainingTasks(){
         return taskList.countRemaining();
     }
 
-    // parse task index
+    // parse task number (instead of previous parse task index)
     private static Integer parseTaskNumber(String input, int prefixLength){
         String intPart = input.substring(prefixLength).trim();
         if (intPart.isEmpty()){
@@ -132,8 +133,11 @@ public class Lumi {
     }
 
     // add task method
-    private static void addTask(Task task){
+    private static void addTask(Task task) throws LumiException{
+        // add task and save in storage
         taskList.add(task);
+        storage.save(taskList);
+
         int taskCount = taskList.size();
 
         System.out.println(DIVIDER);
@@ -176,10 +180,24 @@ public class Lumi {
     }
 
     // ====================== MAIN =========================
-    public static void main(String[] args) {
+    public static void main(String[] args) throws LumiException{
+        // if test mode add --test flag
         isTestMode = args.length > 0 && args[0].equals("--test");
+        storage = isTestMode
+                ? new Storage("./data/lumi-test.txt")
+                : new Storage("./data/lumi.txt");
+
         // For user input
         Scanner in = new Scanner(System.in);
+
+        try {
+            taskList = storage.load();
+        } catch (LumiException e){
+            taskList = new TaskList();
+            System.out.println(DIVIDER);
+            System.out.println("LUMI CANNOT SAVE YOUR TASKS!! Reeeeeestarting!!");
+            System.out.println(DIVIDER);
+        }
 
         // Print Lumi greeting
         String name = askName(in);
@@ -238,18 +256,17 @@ public class Lumi {
     private static boolean handleCommand(String input, String userInput) throws LumiException{
         // switch cases for simple commands
         switch(input) {
-
-        case ("bye"):
+            case ("bye"):
             System.out.println(DIVIDER);
             System.out.println("Lumi: " + getGoodBye());
             System.out.println(DIVIDER);
             return true;
 
-        case ("list"):
+            case ("list"):
             printList();
             return false;
 
-        case ("help"):
+            case ("help"):
             System.out.println(DIVIDER);
             System.out.println(HELP_MESSAGE);
             System.out.println(DIVIDER);
@@ -273,8 +290,11 @@ public class Lumi {
                 throw new LumiException("You are EXTRA! Lumi does NOT like it!!\n" + task);
             }
 
+            // set done and save in storage
             task.setDone(true);
+            storage.save(taskList);
 
+            // mark as done and give count
             System.out.println(DIVIDER);
             System.out.println("Good Job! I have marked this task as done:");
             System.out.println(" " + task);
@@ -300,8 +320,11 @@ public class Lumi {
                 throw new LumiException("What are you unmarking?? You are troubling me for nothing!!\n" + task);
             }
 
+            // set done, save in storage
             task.setDone(false);
+            storage.save(taskList);
 
+            // unmark task and give count
             System.out.println(DIVIDER);
             System.out.println("Oh no! Let me unmark this for you:");
             System.out.println(" " + task);
@@ -310,11 +333,10 @@ public class Lumi {
             return false;
         }
 
-        // Edge cases when adding task
-        // 1. If input is empty
+        // dont need catch >= MAXTASKS since using ArrayList<> now (dynamic)
+        // error if input is empty
         if (input.isEmpty()){
             throw new LumiException("WHAT??? ITS EMPTY???? Give me SOMETHING!!");
-
         }
 
         // Add todo task
@@ -378,20 +400,24 @@ public class Lumi {
         }
         
         // Delete tasks
-        // Error 1: if no task number
+        // if no task number after delete
         if (input.equals("delete")){
             throw new LumiException("Do you think Lumi is a mind reader?? GIVE ME A TASK NUMBER");
         }
         if (input.startsWith("delete")){
             Integer taskNumberObj = parseTaskNumber(input, "delete ".length());
 
+            // if input is not a number
             if (taskNumberObj == null){
                 throw new LumiException("*facepalm* HOW CAN YOU SCREW IT UP! The format is: delete <task NUMBER>!!");
             }
 
+            // delete task, save in storage
             int taskNumber = taskNumberObj;
             Task deleted = taskList.delete(taskNumber);
+            storage.save(taskList);
 
+            // show count for tasks left in the list - different from countRemainingTasks!!
             System.out.println(DIVIDER);
             System.out.println("Okie go on with your other tasks...");
             System.out.println(" " + deleted);
@@ -403,7 +429,7 @@ public class Lumi {
         // if command is unknown (not any of the mentioned)
         throw new LumiException("""
         AH?? What is THAT?? TRY AGAIN!
-        Try these instead: todo, deadline, event, list, mark, unmark, bye
+        Try these instead: todo, deadline, event, list, mark, unmark, bye, delete, help
         For the syntax and list of commands, you can type 'help' to know everything
         If I don't see any of these, you are toast!!
         """
