@@ -11,38 +11,38 @@ ____________________________________________________________
 Tasks for nic:
 ____________________________________________________________
 Commands you can use:
-1) list - shows all tasks
-Format : list
-Example: list
+    1) list - shows all tasks
+    Format : list
+    Example: list
 
-2) todo - add tasks that do not have deadlines
-Format: todo <description>
-Example: todo borrow book
+    2) todo - add tasks that do not have deadlines
+    Format: todo <description>
+    Example: todo borrow book
 
-3) deadline - for tasks that has deadline
-Format: deadline <description> /by <when>
-Example: deadline return book /by tomorrow 6pm
+    3) deadline - for tasks that has deadline
+    Format: deadline <description> /by <when>
+    Example: deadline return book /by tomorrow 6pm
 
-4) event - for events between a certain time frame
-Format: event <description> /from <start> /to <end>
-Example: event meeting /from 2pm /to 3pm
+    4) event - for events between a certain time frame
+    Format: event <description> /from <start> /to <end>
+    Example: event meeting /from 2pm /to 3pm
 
-5) mark - to mark a task that has been completed
-Format: mark <task number>
-Example: mark 1
+    5) mark - to mark a task that has been completed
+    Format: mark <task number>
+    Example: mark 1
 
-6) unmark - to unmark a task that had not been completed
-            but was accidentally marked
-Format: unmark <task number>
-Example: unmark 2
+    6) unmark - to unmark a task that had not been completed
+                but was accidentally marked
+    Format: unmark <task number>
+    Example: unmark 2
 
-7) bye - exits the Lumi chatbot
-Format: bye
-Example: bye
+    7) bye - exits the Lumi chatbot
+    Format: bye
+    Example: bye
 
-8) delete - deletes selected task
-Format: delete <task number>
-Example: delete 2
+    8) delete - deletes selected task
+    Format: delete <task number>
+    Example: delete 2
 
 ____________________________________________________________
 Tasks for nic:
