@@ -1,11 +1,13 @@
 package lumi;
 import lumi.exception.LumiException;
+import lumi.task.Todo;
 import lumi.task.Deadline;
 import lumi.task.Event;
 import lumi.task.Task;
-import lumi.task.Todo;
 import lumi.task.TaskList;
 import lumi.storage.Storage;
+import lumi.parser.Parser;
+import lumi.parser.ParsedCommand;
 
 import java.util.Scanner;
 public class Lumi {
@@ -49,15 +51,6 @@ public class Lumi {
             Example: delete 2
             """;
     // =================== CONSTANTS ====================
-    // todo prefix length + space
-    public static final int CMD_TODO_LENGTH = 5;
-
-    // mark prefix length + space
-    public static final int CMD_MARK_LENGTH = 5;
-
-    // unmark prefix length + space
-    public static final int CMD_UNMARK_LENGTH = 7;
-
     // create divider
     private static final String DIVIDER =
             "____________________________________________________________";
@@ -119,19 +112,6 @@ public class Lumi {
         return taskList.countRemaining();
     }
 
-    // parse task number (instead of previous parse task index)
-    private static Integer parseTaskNumber(String input, int prefixLength){
-        String intPart = input.substring(prefixLength).trim();
-        if (intPart.isEmpty()){
-            return null;
-        }
-        try {
-            return Integer.parseInt(intPart); // keep it 1-based
-        } catch (NumberFormatException e){
-            return null;
-        }
-    }
-
     // add task method
     private static void addTask(Task task) throws LumiException{
         // add task and save in storage
@@ -180,7 +160,7 @@ public class Lumi {
     }
 
     // ====================== MAIN =========================
-    public static void main(String[] args) throws LumiException{
+    public static void main(String[] args) {
         // if test mode add --test flag
         isTestMode = args.length > 0 && args[0].equals("--test");
         storage = isTestMode
@@ -236,10 +216,10 @@ public class Lumi {
         while (true){
             System.out.println("Tasks for " + name + ":");
             String userInput = in.nextLine();
-            String input = userInput.trim().toLowerCase();
+            //String input = userInput.trim().toLowerCase();
 
             try {
-                boolean shouldExit = handleCommand(input, userInput);
+                boolean shouldExit = handleCommand(userInput);
                 if (shouldExit) {
                     break;
                 }
@@ -253,186 +233,105 @@ public class Lumi {
     }
 
     // all new commands
-    private static boolean handleCommand(String input, String userInput) throws LumiException{
+    private static boolean handleCommand(String userInput) throws LumiException{
+        ParsedCommand cmd = Parser.parse(userInput);
         // switch cases for simple commands
-        switch(input) {
-            case ("bye"):
-            System.out.println(DIVIDER);
-            System.out.println("Lumi: " + getGoodBye());
-            System.out.println(DIVIDER);
-            return true;
+        switch(cmd.type) {
+            case BYE:
+                System.out.println(DIVIDER);
+                System.out.println("Lumi: " + getGoodBye());
+                System.out.println(DIVIDER);
+                return true;
 
-            case ("list"):
-            printList();
-            return false;
+            case LIST:
+                printList();
+                return false;
 
-            case ("help"):
-            System.out.println(DIVIDER);
-            System.out.println(HELP_MESSAGE);
-            System.out.println(DIVIDER);
-            return false;
+            case HELP:
+                System.out.println(DIVIDER);
+                System.out.println(HELP_MESSAGE);
+                System.out.println(DIVIDER);
+                return false;
+
+            case MARK: {
+                int taskNumber = cmd.taskNumber;
+                Task task = taskList.get(taskNumber);
+
+                // if already marked
+                if (task.isDone()) {
+                    throw new LumiException("You are EXTRA! Lumi does NOT like it!!\n" + task);
+                }
+
+                // set done and save in storage
+                task.setDone(true);
+                storage.save(taskList);
+
+                // mark as done and give count
+                System.out.println(DIVIDER);
+                System.out.println("Good Job! I have marked this task as done:");
+                System.out.println(" " + task);
+                System.out.println("You have " + countRemainingTasks() + " tasks to go");
+                System.out.println(DIVIDER);
+                return false;
+            }
+            case UNMARK: {
+                int taskNumber = cmd.taskNumber;
+                Task task = taskList.get(taskNumber);
+
+                // already unmarked
+                if (!task.isDone()) {
+                    throw new LumiException("What are you unmarking?? You are troubling me for nothing!!\n" + task);
+                }
+
+                // set done, save in storage
+                task.setDone(false);
+                storage.save(taskList);
+
+                // unmark task and give count
+                System.out.println(DIVIDER);
+                System.out.println("Oh no! Let me unmark this for you:");
+                System.out.println(" " + task);
+                System.out.println("You have " + countRemainingTasks() + " tasks to go");
+                System.out.println(DIVIDER);
+                return false;
+            }
+            case DELETE: {
+                int taskNumber = cmd.taskNumber;
+
+                // delete task, save in storage
+                Task deleted = taskList.delete(taskNumber);
+                storage.save(taskList);
+
+                // show count for tasks left in the list - different from countRemainingTasks!!
+                System.out.println(DIVIDER);
+                System.out.println("Okie go on with your other tasks...");
+                System.out.println(" " + deleted);
+                System.out.println("You now have " + taskList.size() + " tasks in your list.");
+                System.out.println(DIVIDER);
+                return false;
+            }
+
+            case TODO:
+                addTask(new Todo(cmd.desc));
+                return false;
+
+            case DEADLINE:
+                addTask(new Deadline(cmd.desc, cmd.by));
+                return false;
+
+            case EVENT:
+                addTask(new Event(cmd.desc, cmd.from, cmd.to));
+                return false;
+
+            default:
+                // if command is unknown (not any of the mentioned)
+                throw new LumiException("""
+                AH?? What is THAT?? TRY AGAIN!
+                Try these instead: todo, deadline, event, list, mark, unmark, bye, delete, help
+                For the syntax and list of commands, you can type 'help' to know everything
+                If I don't see any of these, you are toast!!
+                """
+                );
+            }
         }
-
-        // Mark task
-        if (input.startsWith("mark ")){
-            Integer taskNumberObj = parseTaskNumber(input, CMD_MARK_LENGTH);
-
-            // if not a number
-            if (taskNumberObj == null){
-                throw new LumiException("LUMI IS ABOUT TO GET ANGRY!! GIVE ME A PROPER NUMBER");
-            }
-
-            int taskNumber = taskNumberObj;
-            Task task = taskList.get(taskNumber);
-            
-            // if already marked
-            if (task.isDone()){
-                throw new LumiException("You are EXTRA! Lumi does NOT like it!!\n" + task);
-            }
-
-            // set done and save in storage
-            task.setDone(true);
-            storage.save(taskList);
-
-            // mark as done and give count
-            System.out.println(DIVIDER);
-            System.out.println("Good Job! I have marked this task as done:");
-            System.out.println(" " + task);
-            System.out.println("You have " + countRemainingTasks() + " tasks to go");
-            System.out.println(DIVIDER);
-            return false;
-        }
-
-        // Unmark task
-        if (input.startsWith("unmark ")){
-            Integer taskNumberObj = parseTaskNumber(input, CMD_UNMARK_LENGTH);
-
-            // if not a number
-            if (taskNumberObj == null){
-                throw new LumiException("WHERES THE NUMBER AFT UNMARK?? NOBODY MESSES WITH LUMI");
-            }
-
-            int taskNumber = taskNumberObj;
-            Task task = taskList.get(taskNumber);
-
-            // already unmarked
-            if (!task.isDone()){
-                throw new LumiException("What are you unmarking?? You are troubling me for nothing!!\n" + task);
-            }
-
-            // set done, save in storage
-            task.setDone(false);
-            storage.save(taskList);
-
-            // unmark task and give count
-            System.out.println(DIVIDER);
-            System.out.println("Oh no! Let me unmark this for you:");
-            System.out.println(" " + task);
-            System.out.println("You have " + countRemainingTasks() + " tasks to go");
-            System.out.println(DIVIDER);
-            return false;
-        }
-
-        // dont need catch >= MAXTASKS since using ArrayList<> now (dynamic)
-        // error if input is empty
-        if (input.isEmpty()){
-            throw new LumiException("WHAT??? ITS EMPTY???? Give me SOMETHING!!");
-        }
-
-        // Add todo task
-        if (input.startsWith("todo ")){
-            String desc = userInput.trim().substring(CMD_TODO_LENGTH);
-            if (desc.isEmpty()){
-                throw new LumiException("WHERES THE DESCRIPTION???");
-            }
-            addTask(new Todo(desc));
-            return false;
-        }
-
-        // Add deadline task
-        if (input.equals("deadline") || input.startsWith("deadline ")){
-            String rawText = userInput.trim();
-            int byPos = rawText.indexOf(" /by ");
-
-            // if never adhere to naming
-            if (byPos == -1){
-                throw new LumiException("Lumi will only guide you ONCE! The format is: deadline <task> /by <when>!! NO MORE!!");
-            }
-
-            // after "deadline "
-            String desc = rawText.substring("deadline".length(), byPos).trim();
-            String by = rawText.substring(byPos + " /by ".length()).trim();
-
-            // edge cases
-            if (desc.isEmpty()){
-                throw new LumiException("Wheres the ACTIVITY?? Format is: deadline <task> /by <when>... LAST CHANCE");
-            }
-            if (by.isEmpty()){
-                throw new LumiException("By when?? Format is: deadline <task> /by <when>../FOLLOW SIMPLE INSTRUCTIONS GRRR");
-            }
-            addTask(new Deadline(desc, by));
-            return false;
-        }
-
-        // Add event task
-        if (input.startsWith("event ")){
-            String rawInput = userInput.trim();
-            int fromPos = rawInput.indexOf(" /from ");
-            int toPos = rawInput.indexOf(" /to ");
-
-            // edge cases
-            if (fromPos == -1 || toPos == -1 || toPos < fromPos){
-                throw new LumiException("I will only repeat this ONCE!! Format is: event <task> /from <start> /to <end>...DONT BLOW IT!");
-            }
-
-            String desc = rawInput.substring("event".length(), fromPos).trim();
-            String from = rawInput.substring(fromPos + " /from ".length(), toPos).trim();
-            String to = rawInput.substring(toPos + " /to ".length()).trim();
-
-            if (desc.isEmpty()) {
-                throw new LumiException("What are you DOING?? Event needs a DESCRIPTION!!");
-            }
-            if (from.isEmpty() || to.isEmpty()){
-                throw new LumiException("Event needs BOTH /from and /to!! GET A GRIP");
-            }
-            addTask(new Event(desc, from, to));
-            return false;
-        }
-        
-        // Delete tasks
-        // if no task number after delete
-        if (input.equals("delete")){
-            throw new LumiException("Do you think Lumi is a mind reader?? GIVE ME A TASK NUMBER");
-        }
-        if (input.startsWith("delete")){
-            Integer taskNumberObj = parseTaskNumber(input, "delete ".length());
-
-            // if input is not a number
-            if (taskNumberObj == null){
-                throw new LumiException("*facepalm* HOW CAN YOU SCREW IT UP! The format is: delete <task NUMBER>!!");
-            }
-
-            // delete task, save in storage
-            int taskNumber = taskNumberObj;
-            Task deleted = taskList.delete(taskNumber);
-            storage.save(taskList);
-
-            // show count for tasks left in the list - different from countRemainingTasks!!
-            System.out.println(DIVIDER);
-            System.out.println("Okie go on with your other tasks...");
-            System.out.println(" " + deleted);
-            System.out.println("You now have " + taskList.size() + " tasks in your list.");
-            System.out.println(DIVIDER);
-            return false;
-        }
-
-        // if command is unknown (not any of the mentioned)
-        throw new LumiException("""
-        AH?? What is THAT?? TRY AGAIN!
-        Try these instead: todo, deadline, event, list, mark, unmark, bye, delete, help
-        For the syntax and list of commands, you can type 'help' to know everything
-        If I don't see any of these, you are toast!!
-        """
-        );
     }
-}
