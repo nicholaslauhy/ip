@@ -12,4 +12,9 @@ public class Todo extends Task {
     public String getTaskTypeIcon(){
         return "[T]";
     }
+
+    @Override
+    public String toStorageString() {
+        return "T | " + (isDone ? "1" : "0") + " | " + description;
+    }
 }
