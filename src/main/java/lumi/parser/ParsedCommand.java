@@ -1,4 +1,9 @@
 package lumi.parser;
+import lumi.exception.LumiException;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeParseException;
+
 
 public class ParsedCommand {
     public enum Type {
@@ -15,13 +20,13 @@ public class ParsedCommand {
 
     public final Type type;
     public final String desc;
-    public final String by;
-    public final String from;
-    public final String to;
+    public final LocalDateTime by;
+    public final LocalDateTime from;
+    public final LocalDateTime to;
 
     public final Integer taskNumber;
 
-    private ParsedCommand(Type type, String desc, String by, String from, String to, Integer taskNumber){
+    private ParsedCommand(Type type, String desc, LocalDateTime by, LocalDateTime from, LocalDateTime to, Integer taskNumber){
         this.type = type;
         this.desc = desc;
         this.by = by;
@@ -41,12 +46,26 @@ public class ParsedCommand {
     }
 
     // deadline command
-    public static ParsedCommand deadline(String desc, String by){
-        return new ParsedCommand(Type.DEADLINE, desc, by, null, null, null);
+    public static ParsedCommand deadline(String desc, String byString) throws LumiException {
+        try {
+            LocalDateTime byDate = DateTimeParser.parseFlexibleDateTime(byString);
+            return new ParsedCommand(Type.DEADLINE, desc, byDate, null, null, null);
+        } catch (DateTimeParseException e) {
+            throw new LumiException("Use format yyyy-MM-dd HH:mm (e.g. 2019-10-15 18:00)");
+        }
     }
 
     // event command
-    public static ParsedCommand event(String desc, String from, String to){
+    public static ParsedCommand event(String desc, String fromString, String toString)
+            throws LumiException {
+
+        LocalDateTime from = DateTimeParser.parseFlexibleDateTime(fromString);
+        LocalDateTime to = DateTimeParser.parseFlexibleDateTime(toString);
+
+        if (to.isBefore(from)) {
+            throw new LumiException("Event /to cannot be before /from.");
+        }
+
         return new ParsedCommand(Type.EVENT, desc, null, from, to, null);
     }
 

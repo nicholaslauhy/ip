@@ -8,6 +8,9 @@ import java.nio.file.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeParseException;
+
 public class Storage {
     private final Path filePath;
 
@@ -47,28 +50,12 @@ public class Storage {
             }
             ArrayList<String> lines = new ArrayList<>();
             for (Task t : taskList.all()){
-                lines.add(encode(t));
+                lines.add(t.toStorageString());
             }
             Files.write(filePath, lines);
         } catch (IOException e){
             throw new LumiException("AHHH I CANNOT SAVE THIS!!" + e.getMessage());
         }
-    }
-
-    private String encode(Task t){
-        String done = t.isDone() ? "1" : "0";
-
-        if (t instanceof Todo){
-            return "T | " + done + " | " + t.getDescription();
-        }
-        if (t instanceof Deadline d){
-            return "D | " + done + " | " + d.getDescription() + " | " + d.getBy();
-        }
-        if (t instanceof Event e){
-            return "E | " + done + " | " + e.getDescription() + " | " + e.getFrom() + " | " + e.getTo();
-        }
-        // fallback response
-        return "T | " + done + " | " + t.getDescription();
     }
 
     private Task decode(String line) throws LumiException {
@@ -91,13 +78,26 @@ public class Storage {
             if (parts.length < 4) {
                 throw new LumiException("This deadline line is corrupted!! TRY AGAIN!!" + line);
             }
-            t = new Deadline(desc, parts[3].trim());
+
+            try {
+                LocalDateTime byDate = LocalDateTime.parse(parts[3].trim());
+                t = new Deadline(desc, byDate);
+            } catch (DateTimeParseException e) {
+                throw new LumiException("Stored deadline date is invalid!! FIX YOUR FILE!! " + parts[3]);
+            }
             break;
         case "E":
             if (parts.length < 5) {
                 throw new LumiException("This event line is corrupted!! TRY AGAIN!! " + line);
             }
-            t = new Event(desc, parts[3].trim(), parts[4].trim());
+
+            try {
+                LocalDateTime fromDate = LocalDateTime.parse(parts[3].trim());
+                LocalDateTime toDate = LocalDateTime.parse(parts[4].trim());
+                t = new Event(desc, fromDate, toDate);
+            } catch (DateTimeParseException e) {
+                throw new LumiException("Stored event date is invalid!! FIX YOUR FILE!!");
+            }
             break;
         default:
             throw new LumiException("This task type is unknown!! FIX THIS!! " + type);
