@@ -1,6 +1,7 @@
 package lumi.task;
 
 import java.util.ArrayList;
+import java.util.List;
 import lumi.exception.LumiException;
 
 public class TaskList {
@@ -30,6 +31,20 @@ public class TaskList {
             throw new LumiException("GAAAHHH what imaginative task are you doing!! NUMBER NON-EXISTENT");
         }
         return tasks.remove(index);
+    }
+
+    // for find
+    public List<Task> find(String keyword) {
+        String key = keyword.toLowerCase().trim();
+        List<Task> matches = new ArrayList<>();
+
+        for (Task t : this.all()) {   // since you already have all()
+            String desc = t.getDescription().toLowerCase();
+            if (desc.contains(key)) { // ✅ substring match
+                matches.add(t);
+            }
+        }
+        return matches;
     }
 
     // get size of list

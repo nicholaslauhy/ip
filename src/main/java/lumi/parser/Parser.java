@@ -91,6 +91,15 @@ public class Parser {
             return ParsedCommand.indexed(DELETE, n);
         }
 
+        // find
+        if (input.startsWith("find ")){
+            String keyword = trimmed.substring("find ".length()).trim();
+            if (keyword.isEmpty()){
+                throw new LumiException("Find?? FIND WHAT?? Lumi is NOT a MIND READER!!");
+            }
+            return ParsedCommand.find(keyword);
+        }
+
         throw new LumiException("""
         AH?? What is THAT?? TRY AGAIN!
         Try these instead: todo, deadline, event, list, mark, unmark, bye, delete, help

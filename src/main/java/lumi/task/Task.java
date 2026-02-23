@@ -8,6 +8,10 @@ public abstract class Task {
         this.isDone =false;
     }
 
+    public String getDescription(){
+        return description;
+    }
+
     public boolean isDone(){
         return isDone;
     }

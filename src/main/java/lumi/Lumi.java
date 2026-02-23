@@ -10,6 +10,8 @@ import lumi.parser.Parser;
 import lumi.parser.ParsedCommand;
 import lumi.ui.Ui;
 
+import java.util.List;
+
 public class Lumi {
     // =================== CONSTANTS ====================
     // new TaskList collection
@@ -152,6 +154,14 @@ public class Lumi {
             case EVENT:
                 addTask(new Event(cmd.desc, cmd.from, cmd.to));
                 return false;
+
+            case FIND: {
+                List<Task> matches = taskList.find(cmd.keyword);
+                ui.showFindResults(cmd.keyword, matches);
+                return false;
+            }
+
+
 
             default:
                 // if command is unknown (not any of the mentioned)

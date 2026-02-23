@@ -3,6 +3,7 @@ package lumi.ui;
 import lumi.task.Task;
 import lumi.task.TaskList;
 
+import java.util.List;
 import java.util.Scanner;
 
 public class Ui {
@@ -46,6 +47,10 @@ public class Ui {
                 8) delete - deletes selected task
                 Format: delete <task number>
                 Example: delete 2
+            
+                9) find - finds descriptions matching the string/substring given
+                Format: find <string/substring>
+                Example: find book
             """;
     private static final String[] INTROS = {
             "Hey! Lumi here, What can I help you with?",
@@ -213,4 +218,16 @@ public class Ui {
         showDivider();
     }
 
+    public void showFindResults(String keyword, List<Task> matches) {
+        showDivider();
+        if (matches.isEmpty()) {
+            System.out.println("No matching tasks found for: " + keyword);
+        } else {
+            System.out.println("Here are the matching tasks in your list:");
+            for (int i = 0; i < matches.size(); i++) {
+                System.out.println(" " + (i + 1) + ". " + matches.get(i));
+            }
+        }
+        showDivider();
+    }
 }
