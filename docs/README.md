@@ -31,9 +31,9 @@ For MAC users, ensure that you have the precise JDK version prescribed
 3. Copy the file to the folder that you want to use as the home folder for your Task Manager.
 4. Open Terminal(Mac) or Windows Powershell(Windows), `cd` into the folder you put the jar file in, 
 and use the `java -jar Lumi.jar` command to run the application.
-5. You should see something like <p>`I am your Task Manager! What's your name?`
+5. You should see something like <br>`I am your Task Manager! What's your name?`
 <br>Enter your name and you should get the following with a personalized message:
-```text
+```
 Hello <NAME IN CAPITAL LETTERS>, I am
  _      _   _   __  __   ___
 | |    | | | | |  \/  | |_ _|
