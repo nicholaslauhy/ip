@@ -44,6 +44,10 @@ Commands you can use:
     Format: delete <task number>
     Example: delete 2
 
+    9) find - finds descriptions matching the string/substring given
+    Format: find <string/substring>
+    Example: find book
+
 ____________________________________________________________
 Tasks for nic:
 ____________________________________________________________
@@ -124,7 +128,7 @@ ____________________________________________________________
 Tasks for nic:
 ____________________________________________________________
 Sucks to be youuuu!! NEW TASK FOR YOU!!
- [D][ ] return book (by: Feb 19 2026, 11:59pm)
+ [D][ ] return book (by: Feb 25 2026, 11:59pm)
 Now you have 3 problems to deal with...
 ____________________________________________________________
 Tasks for nic:
@@ -154,7 +158,7 @@ ____________________________________________________________
 Tasks for nic:
 ____________________________________________________________
 Sucks to be youuuu!! NEW TASK FOR YOU!!
- [E][ ] meeting (from: Feb 18 2026, 2:00pm to: Feb 18 2026, 3:00pm)
+ [E][ ] meeting (from: Feb 24 2026, 2:00pm to: Feb 24 2026, 3:00pm)
 Now you have 4 problems to deal with...
 ____________________________________________________________
 Tasks for nic:
@@ -170,8 +174,8 @@ ____________________________________________________________
 Here are the tasks in your list:
  1. [T][ ] borrow book
  2. [T][ ] buy milk
- 3. [D][ ] return book (by: Feb 19 2026, 11:59pm)
- 4. [E][ ] meeting (from: Feb 18 2026, 2:00pm to: Feb 18 2026, 3:00pm)
+ 3. [D][ ] return book (by: Feb 25 2026, 11:59pm)
+ 4. [E][ ] meeting (from: Feb 24 2026, 2:00pm to: Feb 24 2026, 3:00pm)
 ____________________________________________________________
 Tasks for nic:
 ____________________________________________________________
@@ -191,8 +195,8 @@ Tasks for nic:
 ____________________________________________________________
 Here are the tasks in your list:
  1. [T][ ] buy milk
- 2. [D][ ] return book (by: Feb 19 2026, 11:59pm)
- 3. [E][ ] meeting (from: Feb 18 2026, 2:00pm to: Feb 18 2026, 3:00pm)
+ 2. [D][ ] return book (by: Feb 25 2026, 11:59pm)
+ 3. [E][ ] meeting (from: Feb 24 2026, 2:00pm to: Feb 24 2026, 3:00pm)
 ____________________________________________________________
 Tasks for nic:
 ____________________________________________________________
