@@ -4,15 +4,38 @@ import java.util.ArrayList;
 import java.util.List;
 import lumi.exception.LumiException;
 
+/**
+ * Manages a collection of {@link Task} objects.
+ * <p>
+ * Provides operations for adding, retrieving, deleting, searching,
+ * and querying task metadata (e.g., size and remaining count).
+ * <p>
+ * Task indices exposed to the user are 1-based, while the internal
+ * list uses 0-based indexing.
+ */
 public class TaskList {
+    /**
+     * Internal storage of tasks.
+     * <p>
+     * Note: This list is static, meaning all {@code TaskList} instances
+     * share the same underlying task collection.
+     */
     private static final ArrayList<Task> tasks = new ArrayList<>();
 
-    // add task into list of tasks
+    /**
+     * Adds a task to the list
+     * @param task Task to be added
+     */
     public void add(Task task){
         tasks.add(task);
     }
 
-    // get task
+    /**
+     * Retrieves a task using a 1-based task number
+     * @param oneBasedTaskNumber Task number as shown to the user
+     * @return The corresponding {@link Task}
+     * @throws LumiException If the task number is out of range
+     */
     public Task get(int oneBasedTaskNumber) throws LumiException{
         int index = oneBasedTaskNumber - 1;
 
@@ -23,7 +46,12 @@ public class TaskList {
 
     }
 
-    // delete the tasks from the list
+    /**
+     * Deletes a task using a 1-based task number.
+     * @param oneBasedTaskNumber Task number as shown to the user (starting from 1)
+     * @return The removed {@link Task}
+     * @throws LumiException If the task number is out of range
+     */
     public Task delete(int oneBasedTaskNumber) throws LumiException {
         int index = oneBasedTaskNumber - 1;
 
@@ -33,7 +61,13 @@ public class TaskList {
         return tasks.remove(index);
     }
 
-    // for find
+    /**
+     * Finds tasks whose descriptions contain the given keyword.
+     * <p>
+     * Matching is case-insensitive and based on substring containment.
+     * @param keyword Keyword to search for
+     * @return List of matching tasks (possibly empty)
+     */
     public List<Task> find(String keyword) {
         String key = keyword.toLowerCase().trim();
         List<Task> matches = new ArrayList<>();
@@ -47,12 +81,18 @@ public class TaskList {
         return matches;
     }
 
-    // get size of list
+    /**
+     * Returns the total number of tasks in the list.
+     * @return Number of tasks
+     */
     public int size(){
         return tasks.size();
     }
 
-    // count remaining tasks
+    /**
+     * Counts the number of tasks that are not yet marked as done.
+     * @return Number of incomplete tasks
+     */
     public int countRemaining(){
         int remaining = 0;
         for (Task t: tasks){
@@ -63,7 +103,12 @@ public class TaskList {
         return remaining;
     }
 
-    // get all tasks
+    /**
+     * Returns the underlying list of tasks.
+     * <p>
+     * Modifications to the returned list will directly affect the internal state.
+     * @return Internal task list
+     */
     public ArrayList<Task> all(){
         return tasks;
     }

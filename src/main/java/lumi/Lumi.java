@@ -12,34 +12,68 @@ import lumi.ui.Ui;
 
 import java.util.List;
 
+/**
+ * Entry point and main controller for Lumi, my task manager.
+ * <p>
+ * This class wires together the UI, Storage, Parsing and task list components
+ * It is responsible for:
+ * <ul>
+ *     <li>Initializing dependencies (storage, tasklist)</li>
+ *     <li>Loading persisted tasks at startup</li>
+ *     <li>Running the input processing loop</li>
+ *     <li>Dispatch user commands to appropriate actions</li>
+ * </ul>
+ */
 public class Lumi {
-    // =================== CONSTANTS ====================
-    // new TaskList collection
+    /**
+     * In memory task collection for the current run of the application
+     * <p>
+     * This is the single source for tasks during execution and is persisted
+     * via {@link Storage} after mutating commands
+     */
     private static TaskList taskList = new TaskList();
 
-    // storage filepath
+    /**
+     * Creates, persists and retrieves tasks from the local filesystem based on a relative path
+     * <p>
+     * The concrete file path depends on whether the application is started in test mode.
+     */
     private static Storage storage;
 
-    // call Ui
+    /**
+     * Handles user interaction such as prompting, reading input, and displaying results
+     * <p>
+     * All the print statements for each command handled are stored here
+     */
     private static Ui ui;
 
-    // ================= TASKS METHODS ====================
-    // Count remaining tasks (done vs not done in list)
+    /**
+     * Computes the number of remaining tasks in the current task list not done
+     * @return Number of tasks not marked as done
+     */
     private static int countRemainingTasks(){
         return taskList.countRemaining();
     }
 
-    // add task method
+    /**
+     * Adds a task to the list, saves updated list and reports change to the user.
+     * @param task Task to add
+     * @throws LumiException If saving to storage fails
+     */
     private static void addTask(Task task) throws LumiException {
-        // add task and save in storage
         taskList.add(task);
         storage.save(taskList);
         ui.showTaskAdded(task, taskList.size());
     }
 
-    // ====================== MAIN =========================
+    /**
+     * Application entry point
+     * <p>
+     * Supports a {@code --test} flag to switch to a test storage file and test UI behavior
+     * After initialization and loading tasks, it greets the user and starts the handling of commands.
+     * @param args Command-line arguments; {@code --test} enables test mode
+     */
     public static void main(String[] args) {
-        // if test mode add --test flag
         boolean isTestMode = args.length > 0 && args[0].equals("--test");
         storage = isTestMode
                 ? new Storage("./data/lumi-test.txt")
@@ -56,13 +90,20 @@ public class Lumi {
 
         String name = ui.askName();
         ui.printGreeting(name);
-
-        // "Tasks for... " loop
         runLoop(name);
     }
 
-    // ================= HELPER METHODS ====================
-    // print this till bye command given, then will exit
+    /**
+     * Runs the read-evaluate loop until the user issues a termination command like 'bye'
+     * <p>
+     * This method:
+     * <ul>
+     *     <li>Prompts for input</li>
+     *     <li>Parses and executes the command</li>
+     *     <li>Handles any domain errors by showing messages via the UI</li>
+     * </ul>
+     * @param name The user's name used for personalized prompts
+     */
     private static void runLoop(String name){
         while (true){
             ui.showPrompt(name);
@@ -80,10 +121,17 @@ public class Lumi {
         }
     }
 
-    // all new commands
+    /**
+     * Parses a raw user input string and executes the corresponding command
+     * <p>
+     * This method is the main dispatch point for all supported commands.
+     * Any valid commands ran will be added to storage to save the user's progress.
+     * @param userInput Raw command string entered by the user
+     * @return {@code true} if the command requests the application to exit; {@code false} otherwise
+     * @throws LumiException If the command is invalid, violates constraints or saving fails
+     */
     private static boolean handleCommand(String userInput) throws LumiException{
         ParsedCommand cmd = Parser.parse(userInput);
-        // switch cases for simple commands
         switch(cmd.type) {
             case BYE:
                 ui.showBye();
@@ -101,16 +149,12 @@ public class Lumi {
                 int taskNumber = cmd.taskNumber;
                 Task task = taskList.get(taskNumber);
 
-                // if already marked
                 if (task.isDone()) {
                     throw new LumiException("You are EXTRA! Lumi does NOT like it!!\n" + task);
                 }
 
-                // set done and save in storage
                 task.setDone(true);
                 storage.save(taskList);
-
-                // mark as done and give count
                 ui.showMarked(task, countRemainingTasks());
                 return false;
             }
@@ -118,27 +162,19 @@ public class Lumi {
                 int taskNumber = cmd.taskNumber;
                 Task task = taskList.get(taskNumber);
 
-                // already unmarked
                 if (!task.isDone()) {
                     throw new LumiException("What are you unmarking?? You are troubling me for nothing!!\n" + task);
                 }
 
-                // set done, save in storage
                 task.setDone(false);
                 storage.save(taskList);
-
-                // mark as done and give count
                 ui.showUnmarked(task, countRemainingTasks());
                 return false;
             }
             case DELETE: {
                 int taskNumber = cmd.taskNumber;
-
-                // delete task, save in storage
                 Task deleted = taskList.delete(taskNumber);
                 storage.save(taskList);
-
-                // delete and give count
                 ui.showDeleted(deleted, taskList.size());
                 return false;
             }
@@ -161,10 +197,7 @@ public class Lumi {
                 return false;
             }
 
-
-
             default:
-                // if command is unknown (not any of the mentioned)
                 throw new LumiException("""
                 AH?? What is THAT?? TRY AGAIN!
                 Try these instead: todo, deadline, event, list, mark, unmark, bye, delete, help
