@@ -181,17 +181,18 @@ ____________________________________________________________
 Lumi: BYEBYE Have a LUMInous DAY!
 ```
 
-## Command Summary 
+## Command Summary
+
 | Action | Format, Examples |
 |--------|------------------|
-| Add Todo | `todo DESCRIPTION` <br> e.g. `todo finish homework` |
-| Add Deadline | `deadline DESCRIPTION /by DATE` <br> e.g. `deadline submit report /by tomorrow 6pm` |
-| Add Event | `event DESCRIPTION /from START /to END` <br> e.g. `event meeting /from 2pm /to 3pm` |
+| Add Todo | `todo DESCRIPTION`  e.g. `todo finish homework` |
+| Add Deadline | `deadline DESCRIPTION /by DATE`  e.g. `deadline submit report /by tomorrow 6pm` |
+| Add Event | `event DESCRIPTION /from START /to END`  e.g. `event meeting /from 2pm /to 3pm` |
 | List | `list` |
-| Mark | `mark TASK_NUMBER` <br> e.g. `mark 1` |
+| Mark | `mark TASK_NUMBER`  e.g. `mark 1` |
 | Unmark | `unmark TASK_NUMBER` |
-| Delete | `delete TASK_NUMBER` <br> e.g. `delete 2` |
-| Find | `find KEYWORD` <br> e.g. `find book` |
+| Delete | `delete TASK_NUMBER`  e.g. `delete 2` |
+| Find | `find KEYWORD`  e.g. `find book` |
 | Help | `help` |
 | Exit | `bye` |
 
