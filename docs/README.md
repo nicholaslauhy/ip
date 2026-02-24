@@ -32,19 +32,7 @@ For MAC users, ensure that you have the precise JDK version prescribed
 4. Open Terminal(Mac) or Windows Powershell(Windows), `cd` into the folder you put the jar file in, 
 and use the `java -jar Lumi.jar` command to run the application.
 5. You should see something like <br>`I am your Task Manager! What's your name?`
-<br>Enter your name and you should get the following with a personalized message:
-```
-Hello <NAME IN CAPITAL LETTERS>, I am
- _      _   _   __  __   ___
-| |    | | | | |  \/  | |_ _|
-| |    | | | | | |\/| |  | |
-| |___ | |_| | | |  | |  | |
-|_____| \___/  |_|  |_| |___|
-
-I am LUMIIII, ready when you are!
-____________________________________________________________
-Tasks for <name>:
-```
+<br>Enter your name and you should be greeted with a personalized message.
 6. Type the command in the command line and press Enter to execute it
    (e.g. typing `help` and pressing Enter will open the help window.)
 7. Refer to the [Features](#features) below for details of each command
