@@ -17,7 +17,7 @@ If you can type fast, Lumi can help you with task management faster than traditi
     - [Deleting a task: `delete`](#deleting-a-task-delete)
     - [Finding a task: `find`](#finding-a-task-find)
     - [Exiting the program: `bye`](#exiting-the-program-bye)
-- [Command Summary](#command-summary-)
+- [Command Summary](#command-summary)
 - [FAQ](#faq)
 - [Known Issues](#known-issues)
 - [Collaboration](#collaboration)
